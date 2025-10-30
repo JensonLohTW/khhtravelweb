@@ -46,23 +46,23 @@ a, a:hover, a:active, a:visited {
   position: absolute;
   top: 0;
   left: 0;
-  right: 40px;
+  right: 120px;
   height: 40px;
   text-align: center;
 }
 
 .mobile #titleBar {
   height: 50px;
-  right: 50px;
+  right: 150px;
 }
 
 /* If there is a fullscreen button the title bar must make space for it */
 body.fullscreen-enabled #titleBar {
-  right: 80px;
+  right: 160px;
 }
 
 body.fullscreen-enabled.mobile #titleBar {
-  right: 100px;
+  right: 200px;
 }
 
 /* If there are multiple scenes the title bar must make space for the scene list toggle */
@@ -99,7 +99,7 @@ body.multiple-scenes.mobile #titleBar {
   display: none;
   position: absolute;
   top: 0;
-  right: 0;
+  right: 40px;
   width: 40px;
   height: 40px;
   padding: 5px;
@@ -110,6 +110,7 @@ body.multiple-scenes.mobile #titleBar {
 .mobile #fullscreenToggle {
   width: 50px;
   height: 50px;
+  right: 50px;
 }
 
 body.fullscreen-enabled #fullscreenToggle {
@@ -149,7 +150,7 @@ body.fullscreen-enabled #fullscreenToggle {
   display: block;
   position: absolute;
   top: 0;
-  right: 0;
+  right: 40px;
   width: 40px;
   height: 40px;
   padding: 5px;
@@ -160,15 +161,16 @@ body.fullscreen-enabled #fullscreenToggle {
 .mobile #autorotateToggle {
   width: 50px;
   height: 50px;
+  right: 50px;
 }
 
 /* If there is a fullscreen button, autorotate must placed a bit to the left */
 body.fullscreen-enabled #autorotateToggle {
-  right: 40px;
+  right: 80px;
 }
 
 body.fullscreen-enabled.mobile #autorotateToggle {
-  right: 50px;
+  right: 100px;
 }
 
 #autorotateToggle .icon {
@@ -828,3 +830,147 @@ body.view-control-buttons .viewControlButton {
 .viewControlButton-6 {
   margin-left: 105px;
 }
+
+#qrToggle {
+  position: absolute;
+  top: 0;
+  right: 80px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  background-color: rgba(103,115,131,0.85);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  z-index: 30;
+}
+
+#qrToggle:hover,
+#qrToggle:focus {
+  background-color: rgba(125,136,152,0.95);
+  outline: none;
+}
+
+.mobile #qrToggle {
+  width: 50px;
+  height: 50px;
+  font-size: 16px;
+  right: 100px;
+}
+
+/* If there is a fullscreen button, QR button must be placed a bit to the left */
+body.fullscreen-enabled #qrToggle {
+  right: 120px;
+}
+
+body.fullscreen-enabled.mobile #qrToggle {
+  right: 150px;
+}
+
+#qrPopoverOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+body.qr-open #qrPopoverOverlay,
+#qrPopoverOverlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#qrPopover {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  width: 280px;
+  padding: 16px;
+  background-color: rgba(34,37,45,0.96);
+  color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1001;
+}
+
+#qrPopover.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#qrPopover .qrPopover__close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  font-size: 20px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+#qrPopover .qrPopover__title {
+  margin: 0 24px 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#qrPopover .qrPopover__image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+#qrPopover .qrPopover__image canvas,
+#qrPopover .qrPopover__image img {
+  width: 100%;
+  height: auto;
+}
+
+#qrPopover .qrPopover__link,
+#qrPopover .qrPopover__download {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #9bd0ff;
+  word-break: break-all;
+  text-decoration: none;
+}
+
+#qrPopover .qrPopover__link:hover,
+#qrPopover .qrPopover__download:hover,
+#qrPopover .qrPopover__download:focus {
+  text-decoration: underline;
+}
+
+#qrPopover .qrPopover__download[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  #qrPopover {
+    top: 65px;
+    right: 10px;
+    width: calc(100% - 20px);
+  }
+}
+

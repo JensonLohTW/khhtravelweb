@@ -3,7 +3,7 @@
 <head>
 <title>251030KHHTravelWeb</title>
 <meta charset="utf-8">
-<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
 <style> @-ms-viewport { width: device-width; } </style>
 <link rel="stylesheet" href="vendor/reset.min.css">
 <link rel="stylesheet" href="style.css">
@@ -120,6 +120,8 @@
   <img class="icon on" src="img/windowed.png">
 </a>
 
+<button type="button" id="qrToggle" aria-haspopup="dialog" aria-controls="qrPopover" aria-label="顯示目前場景的二維碼">QR</button>
+
 <a href="javascript:void(0)" id="sceneListToggle">
   <img class="icon off" src="img/expand.png">
   <img class="icon on" src="img/collapse.png">
@@ -144,11 +146,29 @@
   <img class="icon" src="img/minus.png">
 </a>
 
+<div id="qrPopoverOverlay" class="qrPopoverOverlay" aria-hidden="true"></div>
+
+<div id="qrPopover" class="qrPopover" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="qrSceneLabel" tabindex="-1">
+  <button type="button" id="qrPopoverClose" class="qrPopover__close" aria-label="關閉二維碼面板">×</button>
+  <h2 id="qrSceneLabel" class="qrPopover__title"></h2>
+  <div id="qrImage" class="qrPopover__image" aria-live="polite"></div>
+  <a id="qrSceneLink" class="qrPopover__link" href="#" target="_blank" rel="noopener noreferrer"></a>
+  <a id="qrDownloadLink" class="qrPopover__download" href="#" aria-disabled="true">下載 QR 圖片</a>
+</div>
+
 <script src="vendor/screenfull.min.js" ></script>
 <script src="vendor/bowser.min.js" ></script>
 <script src="vendor/marzipano.js" ></script>
+<script src="vendor/qrcode.min.js" ></script>
 
 <script src="data.js"></script>
+<script src="modules/environment.js"></script>
+<script src="modules/urlState.js"></script>
+<script src="modules/hotspots.js"></script>
+<script src="modules/sceneManager.js"></script>
+<script src="modules/qrService.js"></script>
+<script src="modules/qrUi.js"></script>
+<script src="modules/uiControls.js"></script>
 <script src="index.js"></script>
 
 </body>

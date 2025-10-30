@@ -5,6 +5,13 @@
 
 set -e
 
+# 取得腳本所在目錄的父目錄（專案根目錄）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# 切換到專案根目錄
+cd "$PROJECT_ROOT"
+
 # 顏色定義
 RED='\033[0;31m'
 GREEN='\033[0;32m'

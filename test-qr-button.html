@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QR 按鈕測試</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    #testContainer {
+      position: relative;
+      width: 100%;
+      height: 80px;
+      background: #f0f0f0;
+      border: 2px solid #ccc;
+    }
+
+    #qrToggle {
+      position: absolute;
+      top: 0;
+      right: 80px;
+      width: 40px;
+      height: 40px;
+      padding: 5px;
+      background-color: rgba(103,115,131,0.85);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      z-index: 30;
+    }
+
+    #qrToggle:hover {
+      background-color: rgba(125,136,152,0.95);
+    }
+
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f4f8;
+      border-left: 4px solid #2196F3;
+    }
+
+    .success {
+      margin-top: 10px;
+      padding: 10px;
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR 按鈕顯示測試</h1>
+
+  <h2>測試容器（模擬實際環境）</h2>
+  <div id="testContainer">
+    <button type="button" id="qrToggle">QR</button>
+  </div>
+
+  <div class="info">
+    <h3>預期結果：</h3>
+    <ul>
+      <li>按鈕應該顯示在灰色容器的右側，距離右邊 80px</li>
+      <li>按鈕應該有深灰色背景</li>
+      <li>按鈕上應該顯示 "QR" 文字</li>
+      <li>鼠標懸停時背景色應該變亮</li>
+    </ul>
+  </div>
+
+  <div class="success" id="result">
+    <strong>✓ 如果您能看到上面的 QR 按鈕，說明 CSS 樣式正常工作</strong>
+  </div>
+
+  <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107;">
+    <h3>故障排除步驟：</h3>
+    <ol>
+      <li><strong>清除瀏覽器緩存：</strong>
+        <ul>
+          <li>Mac: 按 Cmd + Shift + R</li>
+          <li>Windows/Linux: 按 Ctrl + Shift + R</li>
+        </ul>
+      </li>
+      <li><strong>檢查開發者工具：</strong>
+        <ul>
+          <li>按 F12 打開開發者工具</li>
+          <li>查看 Console 標籤是否有 JavaScript 錯誤</li>
+          <li>在 Elements 標籤中搜索 "qrToggle"</li>
+        </ul>
+      </li>
+      <li><strong>驗證 CSS 載入：</strong>
+        <ul>
+          <li>在 Network 標籤中查看 style.css 是否成功載入（200 狀態碼）</li>
+          <li>檢查 style.css 的大小是否為 ~19KB</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <script>
+    document.getElementById('qrToggle').addEventListener('click', function() {
+      alert('QR 按鈕點擊成功！\n\n這證明：\n1. 按鈕元素存在\n2. 按鈕可見\n3. JavaScript 事件正常工作');
+    });
+
+    // 檢測按鈕
+    window.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('qrToggle');
+      var computedStyle = window.getComputedStyle(btn);
+      console.log('QR 按鈕檢測結果：');
+      console.log('- Display:', computedStyle.display);
+      console.log('- Visibility:', computedStyle.visibility);
+      console.log('- Position:', computedStyle.position);
+      console.log('- Right:', computedStyle.right);
+      console.log('- Z-index:', computedStyle.zIndex);
+      console.log('- Width:', computedStyle.width);
+      console.log('- Height:', computedStyle.height);
+    });
+  </script>
+</body>
+</html>

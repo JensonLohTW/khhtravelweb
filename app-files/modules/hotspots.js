@@ -34,10 +34,16 @@
       var tooltip = document.createElement('div');
       tooltip.classList.add('hotspot-tooltip', 'link-hotspot-tooltip');
       var sceneData = findSceneDataById(hotspot.target);
-      tooltip.innerHTML = sceneData ? sceneData.name : '';
+      tooltip.textContent = sceneData ? sceneData.name : '';
 
       wrapper.appendChild(icon);
       wrapper.appendChild(tooltip);
+
+      wrapper.setAttribute('data-target-scene', hotspot.target || '');
+
+      wrapper._getLinkTooltip = function() {
+        return tooltip;
+      };
 
       return wrapper;
     }

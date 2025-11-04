@@ -13,6 +13,9 @@
 <div id="pano"></div>
 
 <div id="sceneList">
+  <div class="sceneListActions">
+    <button type="button" id="contentOverridesExport" class="devOnlyButton" aria-label="匯出目前內容覆寫設定">匯出設定</button>
+  </div>
   <ul class="scenes">
     
       <a href="javascript:void(0)" class="scene" data-id="0-1-7">
@@ -163,12 +166,15 @@
 
 <script src="data.js"></script>
 <script src="modules/environment.js"></script>
+<script src="modules/runtimeConfig.js"></script>
+<script src="modules/configLoader.js"></script>
 <script src="modules/urlState.js"></script>
 <script src="modules/hotspots.js"></script>
 <script src="modules/sceneManager.js"></script>
 <script src="modules/qrService.js"></script>
 <script src="modules/qrUi.js"></script>
 <script src="modules/uiControls.js"></script>
+<script src="modules/sceneNameEditor.js"></script>
 <script src="index.js"></script>
 
 </body>

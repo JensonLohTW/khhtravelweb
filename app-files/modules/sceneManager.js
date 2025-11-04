@@ -23,6 +23,7 @@
     });
 
     var currentScene = null, scenes = [];
+    var linkHotspotRegistry = {};
     var sceneSwitchListeners = [];
 
     var hotspotFactory = hotspotsModule ? hotspotsModule.createFactory({
@@ -55,6 +56,7 @@
         sceneData.linkHotspots.forEach(function(hotspot) {
           var linkElement = hotspotFactory.createLinkHotspotElement(hotspot);
           scene.hotspotContainer().createHotspot(linkElement, { yaw: hotspot.yaw, pitch: hotspot.pitch });
+          registerLinkHotspot(hotspot.target, linkElement);
         });
 
         sceneData.infoHotspots.forEach(function(hotspot) {
@@ -145,14 +147,19 @@
       sceneNameElement.innerHTML = sanitize(scene.data.name);
     }
 
-    function updateSceneList(scene) {
+    function updateSceneList(activeScene) {
       for (var i = 0; i < sceneElements.length; i++) {
         var element = sceneElements[i];
-        if (element.getAttribute('data-id') === scene.data.id) {
+        if (!element) {
+          continue;
+        }
+        var sceneId = element.getAttribute('data-id');
+        if (activeScene && sceneId === activeScene.data.id) {
           element.classList.add('current');
         } else {
           element.classList.remove('current');
         }
+        refreshSceneListText(element, sceneId);
       }
     }
 
@@ -181,6 +188,25 @@
       }
     }
 
+    function renameSceneById(id, newName) {
+      if (!id || typeof newName !== 'string') {
+        return;
+      }
+      var sceneData = findSceneDataById(id);
+      if (sceneData) {
+        sceneData.name = newName;
+      }
+      var sceneRef = findSceneById(id);
+      if (sceneRef) {
+        sceneRef.data.name = newName;
+      }
+      if (currentScene && currentScene.data && currentScene.data.id === id) {
+        updateSceneName(currentScene);
+      }
+      updateSceneList(currentScene);
+      updateLinkHotspotTooltips(id);
+    }
+
     function getScenes() {
       return scenes.slice();
     }
@@ -196,11 +222,59 @@
         .replace('>', '&gt;');
     }
 
+    function refreshSceneListText(element, sceneId) {
+      if (!element || !sceneId) {
+        return;
+      }
+      var textElement = element.querySelector('.text');
+      if (!textElement) {
+        return;
+      }
+      var sceneData = findSceneDataById(sceneId);
+      if (!sceneData) {
+        return;
+      }
+      textElement.innerHTML = sanitize(sceneData.name);
+    }
+
+    function registerLinkHotspot(targetId, element) {
+      if (!targetId || !element) {
+        return;
+      }
+      if (!linkHotspotRegistry[targetId]) {
+        linkHotspotRegistry[targetId] = [];
+      }
+      linkHotspotRegistry[targetId].push(element);
+    }
+
+    function updateLinkHotspotTooltips(targetId) {
+      if (!targetId || !linkHotspotRegistry[targetId]) {
+        return;
+      }
+      var targetScene = findSceneDataById(targetId);
+      var safeName = targetScene ? sanitize(targetScene.name) : '';
+      var elements = linkHotspotRegistry[targetId];
+      var cleaned = [];
+      for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        if (!element || !element.parentNode) {
+          continue;
+        }
+        var tooltip = typeof element._getLinkTooltip === 'function' ? element._getLinkTooltip() : element.querySelector('.link-hotspot-tooltip');
+        if (tooltip) {
+          tooltip.innerHTML = safeName;
+        }
+        cleaned.push(element);
+      }
+      linkHotspotRegistry[targetId] = cleaned;
+    }
+
     return {
       switchScene: switchScene,
       switchSceneById: switchSceneById,
       findSceneById: findSceneById,
       findSceneDataById: findSceneDataById,
+      renameSceneById: renameSceneById,
       getScenes: getScenes,
       getCurrentScene: getCurrentScene,
       addSceneSwitchListener: addSceneSwitchListener,

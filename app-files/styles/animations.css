@@ -1,0 +1,368 @@
+/**
+ * Animations & Micro-interactions Styles
+ * 絲滑動畫與微互動效果
+ * 設計理念：提升使用者體驗、增加視覺愉悅感
+ */
+
+/* ============================================
+   頁面載入動畫
+   ============================================ */
+
+/* 淡入效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 從下方滑入 */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 從左方滑入 */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 縮放淡入 */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================
+   Ripple 點擊效果（漣漪動畫）
+   ============================================ */
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+}
+
+.ripple-effect:active::before {
+  animation: ripple 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   按鈕微互動
+   ============================================ */
+
+/* 脈動效果（用於強調按鈕）*/
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+  }
+}
+
+.pulse-effect {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 彈跳效果 */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* 搖擺效果 */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================
+   場景列表動畫
+   ============================================ */
+
+/* 列表項目依序淡入（僅在列表展開時觸發）*/
+@keyframes fadeInStagger {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+#sceneList.enabled .scene {
+  animation: fadeInStagger 0.3s var(--easing-standard) backwards;
+}
+
+#sceneList.enabled .scene:nth-child(1) { animation-delay: 0.05s; }
+#sceneList.enabled .scene:nth-child(2) { animation-delay: 0.1s; }
+#sceneList.enabled .scene:nth-child(3) { animation-delay: 0.15s; }
+#sceneList.enabled .scene:nth-child(4) { animation-delay: 0.2s; }
+#sceneList.enabled .scene:nth-child(5) { animation-delay: 0.25s; }
+#sceneList.enabled .scene:nth-child(6) { animation-delay: 0.3s; }
+#sceneList.enabled .scene:nth-child(7) { animation-delay: 0.35s; }
+#sceneList.enabled .scene:nth-child(8) { animation-delay: 0.4s; }
+#sceneList.enabled .scene:nth-child(9) { animation-delay: 0.45s; }
+#sceneList.enabled .scene:nth-child(10) { animation-delay: 0.5s; }
+
+/* ============================================
+   控制按鈕入場動畫
+   ============================================ */
+
+.control-button {
+  animation: scaleIn 0.4s var(--easing-emphasized) backwards;
+}
+
+#autorotateToggle { animation-delay: 0.1s; }
+#fullscreenToggle { animation-delay: 0.15s; }
+#qrToggle { animation-delay: 0.2s; }
+#sceneListToggle { animation-delay: 0.05s; }
+
+.viewControlButton.viewControlButton-1 { animation-delay: 0.25s; }
+.viewControlButton.viewControlButton-2 { animation-delay: 0.3s; }
+.viewControlButton.viewControlButton-3 { animation-delay: 0.35s; }
+.viewControlButton.viewControlButton-4 { animation-delay: 0.4s; }
+.viewControlButton.viewControlButton-5 { animation-delay: 0.45s; }
+.viewControlButton.viewControlButton-6 { animation-delay: 0.5s; }
+
+/* ============================================
+   標題欄動畫
+   ============================================ */
+
+#titleBar {
+  animation: slideInUp 0.5s var(--easing-emphasized) backwards;
+}
+
+#titleBar .sceneName {
+  animation: fadeIn 0.6s var(--easing-standard) 0.3s backwards;
+}
+
+/* ============================================
+   熱點動畫
+   ============================================ */
+
+/* 熱點入場動畫 */
+.link-hotspot {
+  animation: scaleIn 0.4s var(--easing-emphasized) backwards;
+}
+
+.info-hotspot {
+  animation: scaleIn 0.5s var(--easing-emphasized) backwards;
+}
+
+/* 熱點 hover 效果由 style.css 中的 transform 控制，不使用持續動畫 */
+
+/* ============================================
+   平滑滾動
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+#sceneList,
+.info-hotspot .info-hotspot-text,
+.info-hotspot-modal .info-hotspot-text {
+  scroll-behavior: smooth;
+}
+
+/* ============================================
+   場景切換時的過渡效果
+   ============================================ */
+
+#pano {
+  transition: opacity 0.3s var(--easing-standard);
+}
+
+/* 場景切換時的淡出效果（需要 JavaScript 配合）*/
+#pano.scene-transitioning {
+  opacity: 0.7;
+}
+
+/* ============================================
+   QR 彈出框動畫增強
+   ============================================ */
+
+/* QR 彈出框動畫由 qr-styles.css 管理 */
+#qrPopover.is-open .qrPopover__image {
+  animation: fadeIn 0.5s var(--easing-standard) 0.2s backwards;
+}
+
+#qrPopover.is-open .qrPopover__link,
+#qrPopover.is-open .qrPopover__download {
+  animation: slideInUp 0.4s var(--easing-standard) backwards;
+}
+
+#qrPopover.is-open .qrPopover__link {
+  animation-delay: 0.3s;
+}
+
+#qrPopover.is-open .qrPopover__download {
+  animation-delay: 0.4s;
+}
+
+/* ============================================
+   Loading 動畫（可選）
+   ============================================ */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================
+   減少動畫偏好支援
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  #sceneList,
+  .info-hotspot .info-hotspot-text,
+  .info-hotspot-modal .info-hotspot-text {
+    scroll-behavior: auto;
+  }
+
+  .link-hotspot:hover,
+  .pulse-effect {
+    animation: none !important;
+  }
+}
+
+/* ============================================
+   懸停時的微妙動畫增強
+   ============================================ */
+
+/* 場景列表項目懸停時的平滑過渡 */
+.no-touch #sceneList .scene {
+  transition: all 0.3s var(--easing-emphasized);
+}
+
+.no-touch #sceneList .scene:hover {
+  transform: translateX(4px);
+}
+
+/* 控制按鈕懸停時的彈跳效果 */
+.no-touch .control-button {
+  transition: all 0.25s var(--easing-emphasized);
+}
+
+.no-touch .control-button:hover {
+  transform: translateY(-2px);
+}
+
+.no-touch .control-button:active {
+  transform: translateY(0) scale(0.95);
+  transition-duration: 0.1s;
+}
+
+/* ============================================
+   特殊效果：光暈效果（移除持續動畫以優化性能）
+   ============================================ */
+
+/* 當前場景已通過靜態樣式高亮顯示，不使用持續動畫 */
+
+/* ============================================
+   進度條動畫（可用於載入狀態）
+   ============================================ */
+
+@keyframes progressBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: progressBar 1.5s var(--easing-standard) infinite;
+}

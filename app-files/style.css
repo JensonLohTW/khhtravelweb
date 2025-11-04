@@ -49,6 +49,7 @@ a, a:hover, a:active, a:visited {
   right: 120px;
   height: 40px;
   text-align: center;
+  z-index: 10;
 }
 
 .mobile #titleBar {
@@ -75,36 +76,255 @@ body.multiple-scenes.mobile #titleBar {
 }
 
 #titleBar .sceneName {
+  /* 尺寸與佈局 */
   width: 100%;
   height: 100%;
   line-height: 30px;
-  padding: 5px;
-  background-color: rgb(58,68,84);
-  background-color: rgba(58,68,84,0.8);
+  padding: var(--spacing-2) var(--spacing-4);
+
+  /* 現代化視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+
+  /* 邊框與陰影 */
+  border-bottom: 1px solid var(--color-border-base);
+  box-shadow: var(--shadow-sm);
+
+  /* 文字樣式 */
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+
+  /* 文字溢出處理 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
+  /* 文字選取 */
   -moz-user-select: text;
   -webkit-user-select: text;
   -ms-user-select: text;
   user-select: text;
+
+  /* 過渡效果 */
+  transition: all var(--duration-base) var(--easing-standard);
 }
 
 .mobile #titleBar .sceneName {
   line-height: 40px;
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-3) var(--spacing-4);
 }
 
+/* ============================================
+   統一控制按鈕樣式（使用設計令牌）
+   ============================================ */
+
+/* === 基礎按鈕類別 === */
+.control-button {
+  /* 佈局 */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 尺寸 */
+  width: var(--size-button-base);
+  height: var(--size-button-base);
+  padding: var(--spacing-1);
+
+  /* 視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-base);
+
+  color: var(--color-text-primary);
+
+  /* 防止文字選取 */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  /* 陰影層次 */
+  box-shadow: var(--shadow-md),
+              0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+
+  /* 互動 */
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  /* 過渡動畫 */
+  transition: all var(--duration-base) var(--easing-standard);
+
+  /* 防止文字選取和拖曳 */
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+/* Hover 狀態（僅桌面） */
+.no-touch .control-button:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg),
+              0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+/* Active 狀態 */
+.control-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-base);
+}
+
+/* Focus 狀態（鍵盤導航） */
+.control-button:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-lg),
+              0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+/* Focus Visible（現代瀏覽器） */
+.control-button:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-lg),
+              0 0 0 4px rgba(251, 191, 36, 0.15);
+}
+
+/* 啟用/開啟狀態 */
+.control-button.enabled {
+  background: linear-gradient(135deg,
+              rgba(251, 191, 36, 0.2),
+              rgba(245, 158, 11, 0.15));
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: var(--shadow-md),
+              0 0 0 1px rgba(251, 191, 36, 0.1) inset;
+}
+
+.no-touch .control-button.enabled:hover {
+  background: linear-gradient(135deg,
+              rgba(251, 191, 36, 0.3),
+              rgba(245, 158, 11, 0.25));
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+/* 行動裝置適配 */
+.mobile .control-button {
+  width: var(--size-button-lg);
+  height: var(--size-button-lg);
+  padding: var(--spacing-2);
+}
+
+/* 禁用狀態 */
+.control-button:disabled {
+  opacity: var(--opacity-50);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 圖標容器 */
+.control-button .icon {
+  position: relative;
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+  transition: opacity var(--duration-base) var(--easing-standard);
+}
+
+.mobile .control-button .icon {
+  width: var(--size-icon-xl);
+  height: var(--size-icon-xl);
+}
+
+/* 圖標狀態切換 */
+.control-button .icon.on {
+  display: none;
+}
+
+.control-button .icon.off {
+  display: block;
+}
+
+.control-button.enabled .icon.on {
+  display: block;
+}
+
+.control-button.enabled .icon.off {
+  display: none;
+}
+
+/* 減少動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .control-button,
+  .control-button .icon {
+    transition: none;
+  }
+
+  .no-touch .control-button:hover {
+    transform: none;
+  }
+}
+
+/* 高對比度模式 */
+@media (prefers-contrast: high) {
+  .control-button {
+    border-width: 2px;
+  }
+
+  .control-button:focus,
+  .control-button:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* === QR 按鈕特殊樣式（與 QR 模組保持一致）=== */
+.control-button--qr {
+  /* 特殊背景色（藍色調） */
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.25);
+
+  /* 字體樣式 */
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.no-touch .control-button--qr:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.control-button--qr:focus,
+.control-button--qr:focus-visible {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: var(--shadow-lg),
+              0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.mobile .control-button--qr {
+  font-size: var(--font-size-base);
+}
+
+/* ============================================
+   控制按鈕定位（視覺樣式由 .control-button 提供）
+   ============================================ */
+
+/* === 全螢幕切換按鈕 === */
 #fullscreenToggle {
   display: none;
   position: absolute;
   top: 0;
   right: 40px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  z-index: 30;
 }
 
 .mobile #fullscreenToggle {
@@ -117,45 +337,13 @@ body.fullscreen-enabled #fullscreenToggle {
   display: block;
 }
 
-#fullscreenToggle .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.mobile #fullscreenToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
-#fullscreenToggle .icon.on {
-  display: none;
-}
-
-#fullscreenToggle .icon.off {
-  display: block;
-}
-
-#fullscreenToggle.enabled .icon.on {
-  display: block;
-}
-
-#fullscreenToggle.enabled .icon.off {
-  display: none;
-}
-
+/* === 自動旋轉切換按鈕 === */
 #autorotateToggle {
   display: block;
   position: absolute;
   top: 0;
   right: 40px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  z-index: 30;
 }
 
 .mobile #autorotateToggle {
@@ -173,44 +361,12 @@ body.fullscreen-enabled.mobile #autorotateToggle {
   right: 100px;
 }
 
-#autorotateToggle .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.mobile #autorotateToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
-#autorotateToggle .icon.on {
-  display: none;
-}
-
-#autorotateToggle .icon.off {
-  display: block;
-}
-
-#autorotateToggle.enabled .icon.on {
-  display: block;
-}
-
-#autorotateToggle.enabled .icon.off {
-  display: none;
-}
-
+/* === 場景列表切換按鈕 === */
 #sceneListToggle {
   position: absolute;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  z-index: 50;
 }
 
 .mobile #sceneListToggle {
@@ -218,83 +374,59 @@ body.fullscreen-enabled.mobile #autorotateToggle {
   height: 50px;
 }
 
-#sceneListToggle .text {
-  position: absolute;
-  top: 5px;
-  left: 15px;
-  width: 100%;
-  line-height: 30px;
-}
-
-#sceneListToggle .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.mobile #sceneListToggle .icon {
-  top: 10px;
-  right: 10px;
-}
-
-#sceneListToggle .icon.on {
-  display: none;
-}
-
-#sceneListToggle .icon.off {
-  display: block;
-}
-
-#sceneListToggle.enabled .icon.on {
-  display: block;
-}
-
-#sceneListToggle.enabled .icon.off {
-  display: none;
-}
-
 #sceneList {
+  /* 定位 */
   position: absolute;
   top: 0;
-  left: -220px;
+  left: 0;
+  z-index: 40;
+
+  /* 尺寸 */
   padding-top: 40px;
   width: 220px;
   max-height: 100%;
+
+  /* 滾動 */
   overflow-x: hidden;
   overflow-y: auto;
-  margin-left: 0;
-  -webkit-transition: margin-left 0.5s ease-in-out;
-  transition: margin-left 0.5s ease-in-out;
+
+  /* 使用 transform 取代 margin-left（效能更好）*/
+  transform: translateX(-220px);
+  -webkit-transition: transform var(--duration-slow) var(--easing-emphasized);
+  transition: transform var(--duration-slow) var(--easing-emphasized);
+}
+
+#sceneList.enabled {
+  transform: translateX(0);
 }
 
 .mobile #sceneList {
   padding-top: 50px;
-}
-
-#sceneList .scenes {
-  width: 100%;
-  background-color: rgb(58,68,84);
-  background-color: rgba(58,68,84,0.8);
-}
-
-.mobile #sceneList {
   width: 100%;
   height: 100%;
-  left: -100%;
+  transform: translateX(-100%);
 }
 
 .mobile #sceneList.enabled {
-  margin-left: 100%;
+  transform: translateX(0);
+}
+
+#sceneList .scenes {
+  /* 尺寸 */
+  width: 100%;
+
+  /* 現代化視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+
+  /* 邊框與陰影 */
+  border-right: 1px solid var(--color-border-base);
+  box-shadow: var(--shadow-lg);
 }
 
 .mobile #sceneList .scenes {
   height: 100%;
-}
-
-#sceneList.enabled {
-  margin-left: 220px;
 }
 
 #sceneList .scene {
@@ -305,9 +437,11 @@ body.fullscreen-enabled.mobile #autorotateToggle {
 
 #sceneList .sceneListActions {
   display: none;
-  padding: 8px 12px;
-  background-color: rgba(58,68,84,0.85);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: var(--spacing-2) var(--spacing-3);
+  background: rgba(30, 33, 41, 0.95);
+  border-bottom: 1px solid var(--color-border-base);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
 }
 
 body.dev-mode #sceneList .sceneListActions {
@@ -316,17 +450,27 @@ body.dev-mode #sceneList .sceneListActions {
 
 #sceneList .sceneListActions .devOnlyButton {
   width: 100%;
-  padding: 6px 8px;
-  background-color: rgba(103,115,131,0.9);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 2px;
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--color-surface-base);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-sm);
   font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-standard);
 }
 
 #sceneList .sceneListActions .devOnlyButton:hover {
-  background-color: rgba(123,135,151,0.95);
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+#sceneList .sceneListActions .devOnlyButton:active {
+  transform: translateY(0);
 }
 
 .mobile #sceneList .scene {
@@ -334,29 +478,40 @@ body.dev-mode #sceneList .sceneListActions {
 }
 
 #sceneList .scene .text {
+  /* 尺寸與佈局 */
   width: 100%;
   height: 100%;
-  padding: 0 15px;
+  padding: 0 var(--spacing-4);
   line-height: 30px;
+
+  /* 文字樣式 */
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+
+  /* 文字溢出處理 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  /* 過渡效果 */
+  transition: color var(--duration-fast) var(--easing-standard);
 }
 
 #sceneList .scene .sceneNameEditorInput {
   width: 100%;
   height: 100%;
-  padding: 0 12px;
+  padding: 0 var(--spacing-3);
   line-height: 30px;
   box-sizing: border-box;
-  border: 1px solid rgba(255,255,255,0.4);
-  background-color: rgba(0,0,0,0.3);
-  color: #fff;
+  border: 1px solid var(--color-border-focus);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--color-text-primary);
   font: inherit;
 }
 
 .mobile #sceneList .scene .text {
   line-height: 40px;
+  font-size: var(--font-size-base);
 }
 
 .mobile #sceneList .scene .sceneNameEditorInput {
@@ -364,13 +519,53 @@ body.dev-mode #sceneList .sceneListActions {
 }
 
 .no-touch #sceneList .scene:hover {
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  background: var(--color-surface-hover);
+  border-left: 3px solid var(--color-primary-400);
+  padding-left: calc(var(--spacing-1) - 3px);
+}
+
+.no-touch #sceneList .scene:hover .text {
+  color: var(--color-text-primary);
 }
 
 #sceneList .scene.current {
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  background: linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0.2) 0%,
+    rgba(245, 158, 11, 0.1) 100%
+  );
+  border-left: 3px solid var(--color-primary-500);
+  padding-left: calc(var(--spacing-1) - 3px);
+}
+
+#sceneList .scene.current .text {
+  color: var(--color-primary-400);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* 自定義滾動條樣式（場景列表）*/
+#sceneList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sceneList::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#sceneList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--easing-standard);
+}
+
+#sceneList::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox 滾動條樣式 */
+#sceneList {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
 }
 
 /* Hide scene list when only a single scene exists */
@@ -378,20 +573,29 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   display: none;
 }
 
-/* Link hotspot */
+/* ============================================
+   Link Hotspot（導航熱點）
+   ============================================ */
 
 .link-hotspot {
+  /* 尺寸 */
   width: 60px;
   height: 60px;
   margin-left: -30px;
   margin-top: -30px;
+
+  /* 視覺樣式 */
   opacity: 0.9;
-  -webkit-transition: opacity 0.2s;
-  transition: opacity 0.2s;
+
+  /* 過渡效果 */
+  -webkit-transition: opacity var(--duration-fast) var(--easing-standard);
+  transition: opacity var(--duration-fast) var(--easing-standard);
 }
 
 .no-touch .link-hotspot:hover {
   opacity: 1;
+  -webkit-transition: opacity var(--duration-base) var(--easing-standard);
+  transition: opacity var(--duration-base) var(--easing-standard);
 }
 
 .mobile .link-hotspot {
@@ -403,39 +607,48 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 100%;
   height: 100%;
   cursor: pointer;
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+
+.no-touch .link-hotspot:hover .link-hotspot-icon {
+  transform: scale(1.1);
 }
 
 .link-hotspot-tooltip {
+  /* 定位 */
   position: absolute;
   left: 100%;
   top: 14px; /* ( 60 - (16 + 2*8) ) / 2 */
+  z-index: 5;
+  margin-left: var(--spacing-2);
 
-  margin-left: 8px;
-
-  font-size: 14px;
-
+  /* 尺寸 */
   max-width: 280px;
   min-width: 120px;
 
-  padding: 10px 12px;
+  /* 間距 */
+  padding: var(--spacing-3) var(--spacing-4);
 
-  border-radius: 6px;
+  /* 視覺樣式 - 現代化設計 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
 
-  background-color: rgba(58,68,84,0.95);
-  color: #fff;
-
+  /* 文字樣式 */
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
   white-space: pre-line;
-  line-height: 1.5;
+  line-height: var(--line-height-relaxed);
   word-break: break-word;
 
+  /* 顯示狀態 */
   display: block;
   opacity: 1;
   visibility: visible;
-
   pointer-events: none;
-
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  z-index: 5;
 }
 
 .link-hotspot-tooltip-title,
@@ -450,40 +663,58 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 /* 行動裝置上的 tooltip 調整 */
 .mobile .link-hotspot-tooltip {
   max-width: 320px;
-  font-size: 15px;
-  padding: 12px 14px;
+  font-size: var(--font-size-base);
+  padding: var(--spacing-4);
   line-height: 1.6;
 }
 
-/* Info hotspot */
+/* ============================================
+   Info Hotspot（資訊熱點）
+   ============================================ */
 
 .info-hotspot {
   line-height: 1.2em;
   opacity: 0.9;
-  -webkit-transition: opacity 0.2s 0.2s;
-  transition: opacity 0.2s 0.2s;
+  -webkit-transition: opacity var(--duration-fast) var(--duration-fast);
+  transition: opacity var(--duration-fast) var(--duration-fast);
 }
 
 .no-touch .info-hotspot:hover {
   opacity: 1;
-  -webkit-transition: opacity 0.2s;
-  transition: opacity 0.2s;
+  -webkit-transition: opacity var(--duration-fast);
+  transition: opacity var(--duration-fast);
 }
 
 .info-hotspot.visible {
   opacity: 1;
 }
 
+/* Info Hotspot Header（標題區）*/
 .info-hotspot .info-hotspot-header {
+  /* 尺寸 */
   width: 40px;
   height: 40px;
+
+  /* 視覺樣式 - 現代化設計 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
   border-radius: 20px;
-  background-color: rgb(103,115,131);
+  box-shadow: var(--shadow-md);
+
+  /* 游標 */
   cursor: pointer;
-  -webkit-transition: width 0.3s ease-in-out 0.5s,
-                      border-radius 0.3s ease-in-out 0.5s;
-  transition: width 0.3s ease-in-out 0.5s,
-              border-radius 0.3s ease-in-out 0.5s;
+
+  /* 過渡效果 */
+  -webkit-transition: width var(--duration-slow) var(--easing-emphasized) 0.5s,
+                      border-radius var(--duration-slow) var(--easing-emphasized) 0.5s,
+                      background var(--duration-base) var(--easing-standard),
+                      box-shadow var(--duration-base) var(--easing-standard);
+  transition: width var(--duration-slow) var(--easing-emphasized) 0.5s,
+              border-radius var(--duration-slow) var(--easing-emphasized) 0.5s,
+              background var(--duration-base) var(--easing-standard),
+              box-shadow var(--duration-base) var(--easing-standard);
 }
 
 .mobile .info-hotspot .info-hotspot-header {
@@ -494,24 +725,30 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 
 .desktop.no-touch .info-hotspot .info-hotspot-header:hover {
   width: 260px;
-  border-radius: 5px;
-  -webkit-transition: width 0.3s ease-in-out,
-                      border-radius 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out,
-              border-radius 0.3s ease-in-out;
+  border-radius: var(--radius-base);
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-lg);
+  -webkit-transition: width var(--duration-slow) var(--easing-emphasized),
+                      border-radius var(--duration-slow) var(--easing-emphasized),
+                      background var(--duration-base) var(--easing-standard),
+                      box-shadow var(--duration-base) var(--easing-standard);
+  transition: width var(--duration-slow) var(--easing-emphasized),
+              border-radius var(--duration-slow) var(--easing-emphasized),
+              background var(--duration-base) var(--easing-standard),
+              box-shadow var(--duration-base) var(--easing-standard);
 }
 
 .desktop .info-hotspot.visible .info-hotspot-header,
 .desktop.no-touch .info-hotspot.visible .info-hotspot-header:hover {
   width: 260px;
-  border-radius: 5px;
+  border-radius: var(--radius-base);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  -webkit-transition: width 0.3s ease-in-out,
-                      border-radius 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out,
-              border-radius 0.3s ease-in-out;
+  -webkit-transition: width var(--duration-slow) var(--easing-emphasized),
+                      border-radius var(--duration-slow) var(--easing-emphasized);
+  transition: width var(--duration-slow) var(--easing-emphasized),
+              border-radius var(--duration-slow) var(--easing-emphasized);
 }
 
 .info-hotspot .info-hotspot-icon-wrapper {
@@ -571,28 +808,42 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   user-select: text;
 }
 
+/* Info Hotspot Close Button（關閉按鈕）*/
 .info-hotspot .info-hotspot-close-wrapper {
+  /* 定位 */
   position: absolute;
   left: 260px;
   top: 0;
-  height: 40px;
   width: 40px;
-  border-top-right-radius: 5px;
-  background-color: rgb(78,88,104);
+  height: 40px;
+
+  /* 視覺樣式 */
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border-base);
+  border-top-right-radius: var(--radius-base);
+  box-shadow: var(--shadow-sm);
+
+  /* 顯示狀態 */
   visibility: hidden;
+
+  /* 3D 變換 */
   -ms-transform: perspective(200px) rotateY(90deg);
   -webkit-transform: perspective(200px) rotateY(90deg);
   transform: perspective(200px) rotateY(90deg);
   -ms-transform-origin: 0 50% 0;
   -webkit-transform-origin: 0 50% 0;
   transform-origin: 0 50% 0;
-  -webkit-transition: -ms-transform 0.3s 0.3s,
-                      -webkit-transform 0.3s 0.3s,
-                      transform 0.3s 0.3s,
+
+  /* 過渡效果 */
+  -webkit-transition: -ms-transform var(--duration-slow) var(--duration-slow),
+                      -webkit-transform var(--duration-slow) var(--duration-slow),
+                      transform var(--duration-slow) var(--duration-slow),
+                      background var(--duration-base) var(--easing-standard),
                       visibility 0s 0.6s;
-  transition: -ms-transform 0.3s 0.3s,
-              -webkit-transform 0.3s 0.3s,
-              transform 0.3s 0.3s,
+  transition: -ms-transform var(--duration-slow) var(--duration-slow),
+              -webkit-transform var(--duration-slow) var(--duration-slow),
+              transform var(--duration-slow) var(--duration-slow),
+              background var(--duration-base) var(--easing-standard),
               visibility 0s 0.6s;
 }
 
@@ -601,51 +852,89 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   -ms-transform: perspective(200px) rotateY(0deg);
   -webkit-transform: perspective(200px) rotateY(0deg);
   transform: perspective(200px) rotateY(0deg);
-  -webkit-transition: -ms-transform 0.3s,
-                      -webkit-transform 0.3s,
-                      transform 0.3s,
+  -webkit-transition: -ms-transform var(--duration-slow),
+                      -webkit-transform var(--duration-slow),
+                      transform var(--duration-slow),
+                      background var(--duration-base) var(--easing-standard),
                       visibility 0s 0s;
-  transition: -ms-transform 0.3s,
-              -webkit-transform 0.3s,
-              transform 0.3s,
+  transition: -ms-transform var(--duration-slow),
+              -webkit-transform var(--duration-slow),
+              transform var(--duration-slow),
+              background var(--duration-base) var(--easing-standard),
               visibility 0s 0s;
+}
+
+.desktop .info-hotspot .info-hotspot-close-wrapper:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .info-hotspot .info-hotspot-close-icon {
   width: 70%;
   height: 70%;
   margin: 15%;
+  transition: transform var(--duration-fast) var(--easing-standard);
 }
 
+.desktop .info-hotspot .info-hotspot-close-wrapper:hover .info-hotspot-close-icon {
+  transform: rotate(90deg);
+}
+
+/* Info Hotspot Text（文字內容區）*/
 .info-hotspot .info-hotspot-text {
+  /* 定位 */
   position: absolute;
   width: 300px;
   height: auto;
   max-height: 200px;
   top: 40px;
   left: 0;
-  padding: 10px;
-  background-color: rgb(58,68,84);
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+
+  /* 間距 */
+  padding: var(--spacing-3);
+
+  /* 視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-top: none;
+  border-bottom-right-radius: var(--radius-base);
+  border-bottom-left-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+
+  /* 文字樣式 */
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+
+  /* 滾動 */
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
+
+  /* 顯示狀態 */
   visibility: hidden;
-  /* rotate(90deg) causes transition flicker on Firefox 58 */
+
+  /* 3D 變換 */
   -ms-transform: perspective(200px) rotateX(-89.999deg);
   -webkit-transform: perspective(200px) rotateX(-89.999deg);
   transform: perspective(200px) rotateX(-89.999deg);
   -ms-transform-origin: 50% 0 0;
   -webkit-transform-origin: 50% 0 0;
   transform-origin: 50% 0 0;
-  -webkit-transition: -ms-transform 0.3s,
-                      -webkit-transform 0.3s,
-                      transform 0.3s,
-                      visibility 0s 0.3s;
-  transition: -ms-transform 0.3s,
-              -webkit-transform 0.3s,
-              transform 0.3s,
-              visibility 0s 0.3s;
 
+  /* 過渡效果 */
+  -webkit-transition: -ms-transform var(--duration-slow),
+                      -webkit-transform var(--duration-slow),
+                      transform var(--duration-slow),
+                      visibility 0s var(--duration-slow);
+  transition: -ms-transform var(--duration-slow),
+              -webkit-transform var(--duration-slow),
+              transform var(--duration-slow),
+              visibility 0s var(--duration-slow);
+
+  /* 文字選取 */
   -moz-user-select: text;
   -webkit-user-select: text;
   -ms-user-select: text;
@@ -657,67 +946,112 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   -ms-transform: perspective(200px) rotateX(0deg);
   -webkit-transform: perspective(200px) rotateX(0deg);
   transform: perspective(200px) rotateX(0deg);
-  -webkit-transition: -ms-transform 0.3s 0.3s,
-                      -webkit-transform 0.3s 0.3s,
-                      transform 0.3s 0.3s,
+  -webkit-transition: -ms-transform var(--duration-slow) var(--duration-slow),
+                      -webkit-transform var(--duration-slow) var(--duration-slow),
+                      transform var(--duration-slow) var(--duration-slow),
                       visibility 0s 0s;
-  transition: -ms-transform 0.3s 0.3s,
-              -webkit-transform 0.3s 0.3s,
-              transform 0.3s 0.3s,
+  transition: -ms-transform var(--duration-slow) var(--duration-slow),
+              -webkit-transform var(--duration-slow) var(--duration-slow),
+              transform var(--duration-slow) var(--duration-slow),
               visibility 0s 0s;
 }
 
-/* Info hotspot modal */
+/* 自定義滾動條（Info Hotspot Text）*/
+.info-hotspot .info-hotspot-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-hotspot .info-hotspot-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.info-hotspot .info-hotspot-text::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.info-hotspot .info-hotspot-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   Info Hotspot Modal（行動裝置模態框）
+   ============================================ */
 
 .desktop .info-hotspot-modal {
   display: none;
 }
 
 .info-hotspot-modal {
+  /* 定位 */
   top: 0;
   left: 0;
   position: absolute;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   z-index: 11000 !important;
-  background-color: rgba(0,0,0,.5);
+
+  /* 溢出 */
+  overflow: hidden;
+
+  /* 背景遮罩 */
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+
+  /* 文字 */
   line-height: 1.2em;
+
+  /* 顯示狀態 */
   opacity: 0;
   visibility: hidden;
-  -webkit-transition: opacity 0.2s ease-in-out 0.5s,
+
+  /* 過渡效果 */
+  -webkit-transition: opacity var(--duration-fast) var(--easing-standard) 0.5s,
                       visibility 0s 0.7s;
-  transition: opacity 0.2s ease-in-out 0.5s,
+  transition: opacity var(--duration-fast) var(--easing-standard) 0.5s,
               visibility 0s 0.7s;
 }
 
 .info-hotspot-modal.visible {
   opacity: 1;
   visibility: visible;
-  -webkit-transition: opacity 0.2s ease-in-out,
+  -webkit-transition: opacity var(--duration-fast) var(--easing-standard),
                       visibility 0s 0s;
-  transition: opacity 0.2s ease-in-out,
+  transition: opacity var(--duration-fast) var(--easing-standard),
               visibility 0s 0s;
 }
 
+/* Modal Header（標題區）*/
 .info-hotspot-modal .info-hotspot-header {
+  /* 定位 */
   position: absolute;
   top: 60px;
   left: 10px;
   right: 10px;
   width: auto;
   height: 50px;
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+
+  /* 視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-base) var(--radius-base) 0 0;
+  box-shadow: var(--shadow-lg);
+
+  /* 顯示狀態 */
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in-out 0.2s;
-  transition: opacity 0.3s ease-in-out 0.2s;
+
+  /* 過渡效果 */
+  -webkit-transition: opacity var(--duration-slow) var(--easing-standard) 0.2s;
+  transition: opacity var(--duration-slow) var(--easing-standard) 0.2s;
 }
 
 .info-hotspot-modal.visible .info-hotspot-header {
   opacity: 1;
-  -webkit-transition: opacity 0.3s ease-in-out 0.2s;
-  transition: opacity 0.3s ease-in-out 0.2s;
+  -webkit-transition: opacity var(--duration-slow) var(--easing-standard) 0.2s;
+  transition: opacity var(--duration-slow) var(--easing-standard) 0.2s;
 }
 
 .info-hotspot-modal .info-hotspot-icon-wrapper {
@@ -758,37 +1092,82 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   user-select: text;
 }
 
+/* Modal Close Button（關閉按鈕）*/
 .info-hotspot-modal .info-hotspot-close-wrapper {
+  /* 定位 */
   position: absolute;
   top: 0;
   right: 0;
   width: 50px;
   height: 50px;
-  background-color: rgb(78,88,104);
-  background-color: rgba(78,88,104,0.8);
+
+  /* 視覺樣式 */
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border-base);
+  border-top-right-radius: var(--radius-base);
+  box-shadow: var(--shadow-sm);
+
+  /* 游標 */
   cursor: pointer;
+
+  /* 過渡效果 */
+  transition: background var(--duration-base) var(--easing-standard);
+}
+
+.info-hotspot-modal .info-hotspot-close-wrapper:active {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
 }
 
 .info-hotspot-modal .info-hotspot-close-icon {
   width: 70%;
   height: 70%;
   margin: 15%;
+  transition: transform var(--duration-fast) var(--easing-standard);
 }
 
+.info-hotspot-modal .info-hotspot-close-wrapper:active .info-hotspot-close-icon {
+  transform: rotate(90deg) scale(0.9);
+}
+
+/* Modal Text（文字內容區）*/
 .info-hotspot-modal .info-hotspot-text {
+  /* 定位 */
   position: absolute;
   top: 110px;
   bottom: 10px;
   left: 10px;
   right: 10px;
-  padding: 10px;
-  background-color: rgb(58,68,84);
-  background-color: rgba(58,68,84,0.8);
-  overflow-y: auto;
-  opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in-out;
-  transition: opacity 0.3s ease-in-out;
 
+  /* 間距 */
+  padding: var(--spacing-4);
+
+  /* 視覺樣式 */
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-radius: 0 0 var(--radius-base) var(--radius-base);
+  box-shadow: var(--shadow-lg);
+
+  /* 文字樣式 */
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+
+  /* 滾動 */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
+
+  /* 顯示狀態 */
+  opacity: 0;
+
+  /* 過渡效果 */
+  -webkit-transition: opacity var(--duration-slow) var(--easing-standard);
+  transition: opacity var(--duration-slow) var(--easing-standard);
+
+  /* 文字選取 */
   -moz-user-select: text;
   -webkit-user-select: text;
   -ms-user-select: text;
@@ -797,8 +1176,26 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 
 .info-hotspot-modal.visible .info-hotspot-text {
   opacity: 1;
-  -webkit-transition: opacity 0.3s ease-in-out 0.4s;
-  transition: opacity 0.3s ease-in-out 0.4s;
+  -webkit-transition: opacity var(--duration-slow) var(--easing-standard) 0.4s;
+  transition: opacity var(--duration-slow) var(--easing-standard) 0.4s;
+}
+
+/* 自定義滾動條（Modal Text）*/
+.info-hotspot-modal .info-hotspot-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.info-hotspot-modal .info-hotspot-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.info-hotspot-modal .info-hotspot-text::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.info-hotspot-modal .info-hotspot-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* View control buttons */
@@ -855,32 +1252,14 @@ body.view-control-buttons .viewControlButton {
 }
 
 #qrToggle {
+  /* 定位（由 .control-button 提供基礎樣式）*/
   position: absolute;
   top: 0;
   right: 80px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgba(103,115,131,0.85);
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   z-index: 30;
 }
 
-#qrToggle:hover,
-#qrToggle:focus {
-  background-color: rgba(125,136,152,0.95);
-  outline: none;
-}
-
 .mobile #qrToggle {
-  width: 50px;
-  height: 50px;
-  font-size: 16px;
   right: 100px;
 }
 
@@ -893,106 +1272,9 @@ body.fullscreen-enabled.mobile #qrToggle {
   right: 150px;
 }
 
-#qrPopoverOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.45);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 1000;
-}
-
-body.qr-open #qrPopoverOverlay,
-#qrPopoverOverlay.is-open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-#qrPopover {
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  width: 280px;
-  padding: 16px;
-  background-color: rgba(34,37,45,0.96);
-  color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  z-index: 1001;
-}
-
-#qrPopover.is-open {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-#qrPopover .qrPopover__close {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  color: #ffffff;
-  border: none;
-  font-size: 20px;
-  line-height: 20px;
-  cursor: pointer;
-}
-
-#qrPopover .qrPopover__title {
-  margin: 0 24px 8px 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-#qrPopover .qrPopover__image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 0;
-  background-color: #ffffff;
-  border-radius: 4px;
-}
-
-#qrPopover .qrPopover__image canvas,
-#qrPopover .qrPopover__image img {
-  width: 100%;
-  height: auto;
-}
-
-#qrPopover .qrPopover__link,
-#qrPopover .qrPopover__download {
-  display: block;
-  margin-top: 10px;
-  font-size: 12px;
-  color: #9bd0ff;
-  word-break: break-all;
-  text-decoration: none;
-}
-
-#qrPopover .qrPopover__link:hover,
-#qrPopover .qrPopover__download:hover,
-#qrPopover .qrPopover__download:focus {
-  text-decoration: underline;
-}
-
-#qrPopover .qrPopover__download[aria-disabled="true"] {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-@media (max-width: 600px) {
-  #qrPopover {
-    top: 65px;
-    right: 10px;
-    width: calc(100% - 20px);
-  }
-}
+/* ============================================
+   QR Code Styles
+   ============================================
+   QR 相關樣式已移至 app-files/styles/qr-styles.css
+   以實現更好的模組化和代碼解耦
+   ============================================ */

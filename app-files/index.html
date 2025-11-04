@@ -6,7 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
 <style> @-ms-viewport { width: device-width; } </style>
 <link rel="stylesheet" href="vendor/reset.min.css">
+<link rel="stylesheet" href="styles/design-tokens.css">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="styles/qr-styles.css">
+<link rel="stylesheet" href="styles/animations.css">
 </head>
 <body class="multiple-scenes ">
 
@@ -113,44 +116,43 @@
   <h1 class="sceneName"></h1>
 </div>
 
-<a href="javascript:void(0)" id="autorotateToggle">
+<a href="javascript:void(0)" id="autorotateToggle" class="control-button ripple-effect" aria-label="自動旋轉" aria-pressed="false">
   <img class="icon off" src="img/play.png">
   <img class="icon on" src="img/pause.png">
 </a>
 
-<a href="javascript:void(0)" id="fullscreenToggle">
+<a href="javascript:void(0)" id="fullscreenToggle" class="control-button ripple-effect" aria-label="全螢幕模式" aria-pressed="false">
   <img class="icon off" src="img/fullscreen.png">
   <img class="icon on" src="img/windowed.png">
 </a>
 
-<button type="button" id="qrToggle" aria-haspopup="dialog" aria-controls="qrPopover" aria-label="顯示目前場景的二維碼">QR</button>
+<button type="button" id="qrToggle" class="control-button control-button--qr ripple-effect" aria-haspopup="dialog" aria-controls="qrPopover" aria-label="顯示目前場景的二維碼" aria-expanded="false">QR</button>
 
-<a href="javascript:void(0)" id="sceneListToggle">
+<a href="javascript:void(0)" id="sceneListToggle" class="control-button ripple-effect" aria-label="場景列表" aria-pressed="false" aria-controls="sceneList">
   <img class="icon off" src="img/expand.png">
   <img class="icon on" src="img/collapse.png">
 </a>
 
-<a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
+<a href="javascript:void(0)" id="viewUp" class="control-button viewControlButton viewControlButton-1 ripple-effect" aria-label="向上平移">
   <img class="icon" src="img/up.png">
 </a>
-<a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2">
+<a href="javascript:void(0)" id="viewDown" class="control-button viewControlButton viewControlButton-2 ripple-effect" aria-label="向下平移">
   <img class="icon" src="img/down.png">
 </a>
-<a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3">
+<a href="javascript:void(0)" id="viewLeft" class="control-button viewControlButton viewControlButton-3 ripple-effect" aria-label="向左平移">
   <img class="icon" src="img/left.png">
 </a>
-<a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4">
+<a href="javascript:void(0)" id="viewRight" class="control-button viewControlButton viewControlButton-4 ripple-effect" aria-label="向右平移">
   <img class="icon" src="img/right.png">
 </a>
-<a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5">
+<a href="javascript:void(0)" id="viewIn" class="control-button viewControlButton viewControlButton-5 ripple-effect" aria-label="放大">
   <img class="icon" src="img/plus.png">
 </a>
-<a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6">
+<a href="javascript:void(0)" id="viewOut" class="control-button viewControlButton viewControlButton-6 ripple-effect" aria-label="縮小">
   <img class="icon" src="img/minus.png">
 </a>
 
-<div id="qrPopoverOverlay" class="qrPopoverOverlay" aria-hidden="true"></div>
-
+<!-- QR Code Popover - 已移除背景遮罩以優化使用者體驗 -->
 <div id="qrPopover" class="qrPopover" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="qrSceneLabel" tabindex="-1">
   <button type="button" id="qrPopoverClose" class="qrPopover__close" aria-label="關閉二維碼面板">×</button>
   <h2 id="qrSceneLabel" class="qrPopover__title"></h2>

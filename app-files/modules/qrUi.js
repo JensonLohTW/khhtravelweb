@@ -20,7 +20,6 @@
     var sceneLabel = document.querySelector('#qrSceneLabel');
     var urlLink = document.querySelector('#qrSceneLink');
     var downloadLink = document.querySelector('#qrDownloadLink');
-    var overlay = document.querySelector('#qrPopoverOverlay');
     var sceneManager = config.sceneManager;
 
     if (!button || !popover || !qrContainer || !sceneManager) {
@@ -48,10 +47,6 @@
       state.isOpen = true;
       popover.classList.add('is-open');
       document.body.classList.add('qr-open');
-      if (overlay) {
-        overlay.classList.add('is-open');
-        overlay.setAttribute('aria-hidden', 'false');
-      }
       popover.setAttribute('aria-hidden', 'false');
       button.setAttribute('aria-expanded', 'true');
       var currentScene = sceneManager.getCurrentScene();
@@ -68,10 +63,6 @@
       state.isOpen = false;
       popover.classList.remove('is-open');
       document.body.classList.remove('qr-open');
-      if (overlay) {
-        overlay.classList.remove('is-open');
-        overlay.setAttribute('aria-hidden', 'true');
-      }
       popover.setAttribute('aria-hidden', 'true');
       button.setAttribute('aria-expanded', 'false');
     }
@@ -120,12 +111,6 @@
 
     if (closeButton) {
       closeButton.addEventListener('click', function() {
-        closePopover();
-      });
-    }
-
-    if (overlay) {
-      overlay.addEventListener('click', function() {
         closePopover();
       });
     }

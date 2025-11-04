@@ -45,6 +45,17 @@
     var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
     var sceneElements = document.querySelectorAll('#sceneList .scene');
     var exportButton = document.querySelector('#contentOverridesExport');
+    function findSceneDataByIdSafe(id) {
+      if (!data || !data.scenes) {
+        return null;
+      }
+      for (var i = 0; i < data.scenes.length; i++) {
+        if (data.scenes[i] && data.scenes[i].id === id) {
+          return data.scenes[i];
+        }
+      }
+      return null;
+    }
 
     applyConfigSceneOverrides(data, normalizedOverrides.scenes);
     applyConfigHotspotOverrides(data, normalizedOverrides.hotspots);
@@ -118,11 +129,12 @@
         saveOverride: function(id, name) {
           sceneNameStorage.set(id, name);
         },
-        clearOverride: function(id) {
-          sceneNameStorage.remove(id);
-        }
-      });
-    }
+      clearOverride: function(id) {
+        sceneNameStorage.remove(id);
+      }
+    });
+  }
+
 
     setupContentOverridesExportButton(exportButton, {
       enabled: !!runtimeConfig.allowSceneRename,
@@ -324,6 +336,9 @@
           if (typeof override.name === 'string' && override.name) {
             source.scenes[i].name = override.name;
           }
+          if (typeof override.description === 'string') {
+            source.scenes[i].description = override.description;
+          }
           break;
         }
       }
@@ -371,6 +386,25 @@
           }
           if (typeof hotspotOverride.text === 'string') {
             targetHotspot.text = hotspotOverride.text;
+          }
+        }
+      }
+
+      if (Array.isArray(override.linkHotspots) && Array.isArray(scene.linkHotspots)) {
+        for (var k = 0; k < override.linkHotspots.length; k++) {
+          var linkOverride = override.linkHotspots[k];
+          if (!linkOverride || typeof linkOverride.target !== 'string') {
+            continue;
+          }
+          var linkHotspot = findLinkHotspotByTarget(scene.linkHotspots, linkOverride.target);
+          if (!linkHotspot) {
+            continue;
+          }
+          if (typeof linkOverride.label === 'string') {
+            linkHotspot.label = linkOverride.label;
+          }
+          if (typeof linkOverride.body === 'string') {
+            linkHotspot.body = linkOverride.body;
           }
         }
       }
@@ -425,6 +459,14 @@
         result.scenes[currentScene.id] = { name: currentScene.name };
       }
 
+      if (typeof currentScene.description === 'string') {
+        var originalDescription = typeof originalScene.description === 'string' ? originalScene.description : '';
+        if (currentScene.description !== originalDescription) {
+          result.scenes[currentScene.id] = result.scenes[currentScene.id] || {};
+          result.scenes[currentScene.id].description = currentScene.description;
+        }
+      }
+
       if (Array.isArray(currentScene.infoHotspots)) {
         var hotspotDiffs = [];
         for (var j = 0; j < currentScene.infoHotspots.length; j++) {
@@ -455,6 +497,38 @@
           };
         }
       }
+
+      if (Array.isArray(currentScene.linkHotspots)) {
+        var linkDiffs = [];
+        for (var l = 0; l < currentScene.linkHotspots.length; l++) {
+          var currentLink = currentScene.linkHotspots[l];
+          if (!currentLink || !currentLink.target) {
+            continue;
+          }
+          var originalLink = findLinkHotspotByTarget(originalScene.linkHotspots || [], currentLink.target);
+          var linkOverride = { target: currentLink.target };
+          var hasLinkDiff = false;
+          var originalLabel = originalLink && typeof originalLink.label === 'string' ? originalLink.label : '';
+          var originalBody = originalLink && typeof originalLink.body === 'string' ? originalLink.body : '';
+          var currentLabel = typeof currentLink.label === 'string' ? currentLink.label : '';
+          var currentBody = typeof currentLink.body === 'string' ? currentLink.body : '';
+          if (currentLabel !== originalLabel && currentLabel) {
+            linkOverride.label = currentLabel;
+            hasLinkDiff = true;
+          }
+          if (currentBody !== originalBody && currentBody) {
+            linkOverride.body = currentBody;
+            hasLinkDiff = true;
+          }
+          if (hasLinkDiff) {
+            linkDiffs.push(linkOverride);
+          }
+        }
+        if (linkDiffs.length) {
+          result.hotspots[currentScene.id] = result.hotspots[currentScene.id] || {};
+          result.hotspots[currentScene.id].linkHotspots = linkDiffs;
+        }
+      }
     }
 
     return result;
@@ -471,6 +545,19 @@
     }
     return null;
   }
+
+  function findLinkHotspotByTarget(collection, target) {
+    if (!Array.isArray(collection) || !target) {
+      return null;
+    }
+    for (var i = 0; i < collection.length; i++) {
+      if (collection[i] && collection[i].target === target) {
+        return collection[i];
+      }
+    }
+    return null;
+  }
+
 
   function downloadOverridesFile(filename, content) {
     try {

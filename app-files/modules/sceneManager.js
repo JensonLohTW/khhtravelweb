@@ -23,12 +23,14 @@
     });
 
     var currentScene = null, scenes = [];
-    var linkHotspotRegistry = {};
+    var linkHotspotRegistry = [];
+    var linkHotspotFocusListeners = [];
     var sceneSwitchListeners = [];
 
     var hotspotFactory = hotspotsModule ? hotspotsModule.createFactory({
       switchSceneById: switchSceneById,
-      findSceneDataById: findSceneDataById
+      findSceneDataById: findSceneDataById,
+      onLinkHotspotFocus: handleLinkHotspotFocus
     }) : null;
 
     scenes = (data.scenes || []).map(function(sceneData) {
@@ -54,9 +56,9 @@
 
       if (hotspotFactory) {
         sceneData.linkHotspots.forEach(function(hotspot) {
-          var linkElement = hotspotFactory.createLinkHotspotElement(hotspot);
+          var linkElement = hotspotFactory.createLinkHotspotElement(sceneData.id, hotspot);
           scene.hotspotContainer().createHotspot(linkElement, { yaw: hotspot.yaw, pitch: hotspot.pitch });
-          registerLinkHotspot(hotspot.target, linkElement);
+          registerLinkHotspot(sceneData.id, hotspot, linkElement);
         });
 
         sceneData.infoHotspots.forEach(function(hotspot) {
@@ -205,6 +207,7 @@
       }
       updateSceneList(currentScene);
       updateLinkHotspotTooltips(id);
+      notifyLinkHotspotFocus({ type: 'refresh', hotspot: null, sourceSceneId: null, targetScene: sceneData });
     }
 
     function getScenes() {
@@ -234,39 +237,93 @@
       if (!sceneData) {
         return;
       }
-      textElement.innerHTML = sanitize(sceneData.name);
+      textElement.textContent = sceneData.name;
     }
 
-    function registerLinkHotspot(targetId, element) {
-      if (!targetId || !element) {
+    function registerLinkHotspot(sourceSceneId, hotspotData, element) {
+      if (!sourceSceneId || !hotspotData || !element) {
         return;
       }
-      if (!linkHotspotRegistry[targetId]) {
-        linkHotspotRegistry[targetId] = [];
-      }
-      linkHotspotRegistry[targetId].push(element);
+      linkHotspotRegistry.push({
+        sourceSceneId: sourceSceneId,
+        hotspot: hotspotData,
+        element: element
+      });
+      updateSingleLinkHotspotTooltip({ hotspot: hotspotData, element: element });
     }
 
     function updateLinkHotspotTooltips(targetId) {
-      if (!targetId || !linkHotspotRegistry[targetId]) {
+      if (!targetId) {
         return;
       }
-      var targetScene = findSceneDataById(targetId);
-      var safeName = targetScene ? sanitize(targetScene.name) : '';
-      var elements = linkHotspotRegistry[targetId];
-      var cleaned = [];
-      for (var i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        if (!element || !element.parentNode) {
+      for (var i = 0; i < linkHotspotRegistry.length; i++) {
+        var item = linkHotspotRegistry[i];
+        if (!item || !item.hotspot || item.hotspot.target !== targetId) {
           continue;
         }
-        var tooltip = typeof element._getLinkTooltip === 'function' ? element._getLinkTooltip() : element.querySelector('.link-hotspot-tooltip');
-        if (tooltip) {
-          tooltip.innerHTML = safeName;
-        }
-        cleaned.push(element);
+        updateSingleLinkHotspotTooltip(item);
       }
-      linkHotspotRegistry[targetId] = cleaned;
+    }
+
+    function updateSingleLinkHotspotTooltip(item) {
+      if (!item || !item.hotspot || !item.element) {
+        return;
+      }
+      var tooltip = typeof item.element._getLinkTooltip === 'function' ? item.element._getLinkTooltip() : item.element.querySelector('.link-hotspot-tooltip');
+      if (!tooltip) {
+        return;
+      }
+      var targetScene = findSceneDataById(item.hotspot.target);
+
+      // 獲取標題：優先使用自訂標籤，否則使用場景名稱
+      var labelText = item.hotspot && typeof item.hotspot.label === 'string' && item.hotspot.label ? item.hotspot.label : (targetScene && targetScene.name ? targetScene.name : '');
+
+      // 獲取簡介：優先使用 hotspot.body，否則使用場景的 description
+      var descriptionText = '';
+      if (item.hotspot && typeof item.hotspot.body === 'string' && item.hotspot.body) {
+        descriptionText = item.hotspot.body;
+      } else if (targetScene && typeof targetScene.description === 'string' && targetScene.description) {
+        descriptionText = targetScene.description;
+      }
+
+      // 組合顯示文字：標題 + 簡介（如果有的話）
+      var displayText = labelText;
+      if (descriptionText) {
+        displayText = labelText + '\n' + descriptionText;
+      }
+
+      tooltip.textContent = displayText;
+      item.element.setAttribute('aria-label', labelText || '');
+    }
+
+    function handleLinkHotspotFocus(event) {
+      if (!event) {
+        return;
+      }
+      var targetId = event.hotspot && event.hotspot.target ? event.hotspot.target : null;
+      notifyLinkHotspotFocus({
+        type: event.type,
+        sourceSceneId: event.sourceSceneId,
+        hotspot: event.hotspot,
+        targetScene: findSceneDataById(targetId)
+      });
+    }
+
+    function notifyLinkHotspotFocus(event) {
+      for (var i = 0; i < linkHotspotFocusListeners.length; i++) {
+        try {
+          linkHotspotFocusListeners[i](event);
+        } catch (err) {
+          // 忽略監聽器錯誤，避免影響主要流程
+        }
+      }
+    }
+
+    function addLinkHotspotFocusListener(listener) {
+      if (typeof listener !== 'function') {
+        return;
+      }
+      linkHotspotFocusListeners.push(listener);
     }
 
     return {
@@ -278,6 +335,7 @@
       getScenes: getScenes,
       getCurrentScene: getCurrentScene,
       addSceneSwitchListener: addSceneSwitchListener,
+      addLinkHotspotFocusListener: addLinkHotspotFocusListener,
       setAutorotateEnabled: setAutorotateEnabled,
       isAutorotateEnabled: function() {
         return autorotateEnabled;

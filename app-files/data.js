@@ -28,6 +28,7 @@ var APP_DATA = {
         "yaw": 0,
         "fov": 1.5707963267948966
       },
+      "description": "一樓入口大廳，提供旅遊諮詢與導覽服務",
       "linkHotspots": [
         {
           "yaw": 1.3051241166743939,
@@ -66,6 +67,7 @@ var APP_DATA = {
         "yaw": 0,
         "fov": 1.5707963267948966
       },
+      "description": "資訊導覽區，查看館內最新活動與展演",
       "linkHotspots": [],
       "infoHotspots": []
     },
@@ -97,6 +99,7 @@ var APP_DATA = {
         "yaw": 0,
         "fov": 1.5707963267948966
       },
+      "description": "觀景區，可眺望港區與渡輪碼頭美景",
       "linkHotspots": [
         {
           "yaw": -0.9203706357138142,
@@ -135,6 +138,7 @@ var APP_DATA = {
         "yaw": 0,
         "fov": 1.5707963267948966
       },
+      "description": "展示空間，定期舉辦文化展覽",
       "linkHotspots": [],
       "infoHotspots": []
     },
@@ -216,6 +220,7 @@ var APP_DATA = {
         "yaw": 0,
         "fov": 1.5707963267948966
       },
+      "description": "休憩區，提供舒適的休息空間",
       "linkHotspots": [
         {
           "yaw": -2.5807777356394688,

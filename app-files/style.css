@@ -410,68 +410,49 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   left: 100%;
   top: 14px; /* ( 60 - (16 + 2*8) ) / 2 */
 
-  margin-left: 3px;
+  margin-left: 8px;
 
-  font-size: 16px;
+  font-size: 14px;
 
-  max-width: 300px;
+  max-width: 280px;
+  min-width: 120px;
 
-  padding: 8px 10px;
+  padding: 10px 12px;
 
-  border-radius: 5px;
+  border-radius: 6px;
 
-  background-color: rgb(58,68,84);
-  background-color: rgba(58,68,84,0.8);
-
+  background-color: rgba(58,68,84,0.95);
   color: #fff;
 
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  white-space: pre-line;
+  line-height: 1.5;
+  word-break: break-word;
 
-  cursor: pointer;
+  display: block;
+  opacity: 1;
+  visibility: visible;
 
-  opacity: 0;
+  pointer-events: none;
 
-  -ms-transform: translateX(-8px);
-  -webkit-transform: translateX(-8px);
-  transform: translateX(-8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+}
 
-  -webkit-transition: -ms-transform 0.3s,
-                      -webkit-transform 0.3s,
-                      transform 0.3s,
-                      opacity 0.3s;
-  transition: -ms-transform 0.3s,
-              -webkit-transform 0.3s,
-              transform 0.3s,
-              opacity 0.3s;
+.link-hotspot-tooltip-title,
+.link-hotspot-tooltip-description {
+  display: none;
 }
 
 .mobile .link-hotspot {
   top: 19px; /* ( 70 - (16 + 2*8) ) / 2 */
 }
 
-.no-touch .link-hotspot:hover .link-hotspot-tooltip {
-  opacity: 1;
-  -ms-transform: translateX(0);
-  -webkit-transform: translateX(0);
-  transform: translateX(0);
-}
-
-/* Prevent tooltip from triggering */
-.link-hotspot-tooltip {
-  pointer-events: none;
-}
-.no-touch .link-hotspot:hover .link-hotspot-tooltip {
-  pointer-events: all;
-}
-
-/* Fallback mode without pointer-events (IE8-10) */
-.tooltip-fallback .link-hotspot-tooltip {
-  display: none;
-}
-.no-touch .tooltip-fallback .link-hotspot:hover .link-hotspot-tooltip {
-  display: block;
+/* 行動裝置上的 tooltip 調整 */
+.mobile .link-hotspot-tooltip {
+  max-width: 320px;
+  font-size: 15px;
+  padding: 12px 14px;
+  line-height: 1.6;
 }
 
 /* Info hotspot */

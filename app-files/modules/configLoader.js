@@ -73,6 +73,9 @@
         if (typeof sceneConfig.name === 'string') {
           entry.name = sceneConfig.name;
         }
+        if (typeof sceneConfig.description === 'string') {
+          entry.description = sceneConfig.description;
+        }
         if (Object.keys(entry).length) {
           normalized.scenes[sceneId] = entry;
         }
@@ -104,6 +107,23 @@
           });
           if (!normalizedHotspotConfig.infoHotspots.length) {
             delete normalizedHotspotConfig.infoHotspots;
+          }
+        }
+        if (Array.isArray(hotspotConfig.linkHotspots)) {
+          normalizedHotspotConfig.linkHotspots = hotspotConfig.linkHotspots.filter(function(item) {
+            return item && typeof item === 'object' && typeof item.target === 'string' && item.target;
+          }).map(function(item) {
+            var result = { target: item.target };
+            if (typeof item.label === 'string') {
+              result.label = item.label;
+            }
+            if (typeof item.body === 'string') {
+              result.body = item.body;
+            }
+            return result;
+          });
+          if (!normalizedHotspotConfig.linkHotspots.length) {
+            delete normalizedHotspotConfig.linkHotspots;
           }
         }
         if (Object.keys(normalizedHotspotConfig).length) {

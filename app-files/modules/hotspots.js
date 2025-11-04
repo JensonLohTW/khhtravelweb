@@ -11,10 +11,13 @@
     config = config || {};
     var switchSceneById = config.switchSceneById || function() {};
     var findSceneDataById = config.findSceneDataById || function() { return null; };
+    var notifyLinkHotspotFocus = typeof config.onLinkHotspotFocus === 'function' ? config.onLinkHotspotFocus : null;
 
-    function createLinkHotspotElement(hotspot) {
+    function createLinkHotspotElement(sourceSceneId, hotspot) {
       var wrapper = document.createElement('div');
       wrapper.classList.add('hotspot', 'link-hotspot');
+      wrapper.setAttribute('role', 'button');
+      wrapper.setAttribute('tabindex', '0');
 
       var icon = document.createElement('img');
       icon.src = 'img/link.png';
@@ -29,21 +32,76 @@
         switchSceneById(hotspot.target);
       });
 
+      wrapper.addEventListener('keydown', function(event) {
+        var key = event.key || event.keyCode;
+        if (key === 'Enter' || key === ' ' || key === 13 || key === 32) {
+          event.preventDefault();
+          switchSceneById(hotspot.target);
+        }
+      });
+
       stopTouchAndScrollEventPropagation(wrapper);
 
       var tooltip = document.createElement('div');
       tooltip.classList.add('hotspot-tooltip', 'link-hotspot-tooltip');
       var sceneData = findSceneDataById(hotspot.target);
-      tooltip.textContent = sceneData ? sceneData.name : '';
+
+      // 獲取標題：優先使用自訂標籤，否則使用場景名稱
+      var labelText = hotspot && typeof hotspot.label === 'string' && hotspot.label ? hotspot.label : (sceneData ? sceneData.name : '');
+
+      // 獲取簡介：優先使用 hotspot.body，否則使用場景的 description
+      var descriptionText = '';
+      if (hotspot && typeof hotspot.body === 'string' && hotspot.body) {
+        descriptionText = hotspot.body;
+      } else if (sceneData && typeof sceneData.description === 'string' && sceneData.description) {
+        descriptionText = sceneData.description;
+      }
+
+      // 組合顯示文字：標題 + 簡介（如果有的話）
+      var displayText = labelText;
+      if (descriptionText) {
+        displayText = labelText + '\n' + descriptionText;
+      }
+
+      tooltip.textContent = displayText;
+      wrapper.setAttribute('aria-label', labelText || '');
 
       wrapper.appendChild(icon);
       wrapper.appendChild(tooltip);
 
       wrapper.setAttribute('data-target-scene', hotspot.target || '');
+      wrapper.setAttribute('data-source-scene', sourceSceneId || '');
 
       wrapper._getLinkTooltip = function() {
         return tooltip;
       };
+
+      if (notifyLinkHotspotFocus) {
+        var emitFocusEvent = function(eventType) {
+          var latestSceneData = findSceneDataById(hotspot.target);
+          notifyLinkHotspotFocus({
+            type: eventType,
+            sourceSceneId: sourceSceneId,
+            hotspot: hotspot,
+            targetScene: latestSceneData
+          });
+        };
+        wrapper.addEventListener('mouseenter', function() {
+          emitFocusEvent('enter');
+        });
+        wrapper.addEventListener('mouseleave', function() {
+          emitFocusEvent('leave');
+        });
+        wrapper.addEventListener('focus', function() {
+          emitFocusEvent('focus');
+        });
+        wrapper.addEventListener('blur', function() {
+          emitFocusEvent('blur');
+        });
+        wrapper.addEventListener('click', function() {
+          emitFocusEvent('activate');
+        });
+      }
 
       return wrapper;
     }

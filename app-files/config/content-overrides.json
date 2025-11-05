@@ -1,5 +1,15 @@
 {
   "version": 1,
-  "scenes": {},
+  "scenes": {
+    "0-1-7": {
+      "name": "A"
+    },
+    "1-1f-12": {
+      "name": "B"
+    },
+    "2-1f-4": {
+      "name": "new123"
+    }
+  },
   "hotspots": {}
 }

@@ -42,3 +42,9 @@ __pycache__/
 scripts/*.pid
 .server.pid
 *.pid
+
+# 環境配置文件（保留範例文件和預設配置）
+.env
+.env.local
+.env.*.local
+# 注意：config.js 和 .env.example 應該被提交以供參考

@@ -17,17 +17,32 @@
     return;
   }
 
+  console.log('[App] 🚀 應用程式啟動...');
+  console.log('[App] 🔍 檢查 ConfigLoader:', {
+    exists: !!configLoader,
+    hasLoadFunction: typeof configLoader.loadContentOverrides === 'function',
+    runtimeConfig: runtimeConfig
+  });
+
   loadContentOverrides().then(function(contentOverrides) {
+    console.log('[App] ✅ 配置載入完成:', contentOverrides);
     start(contentOverrides || {});
   }).catch(function(error) {
-    console.warn('[App] 載入內容覆寫檔案失敗，改用預設資料。', error);
+    console.warn('[App] ❌ 載入內容覆寫檔案失敗，改用預設資料。', error);
     start({});
   });
 
   function loadContentOverrides() {
+    console.log('[App/loadContentOverrides] 📥 開始載入配置...');
+    console.log('[App/loadContentOverrides] configLoader:', configLoader);
+    console.log('[App/loadContentOverrides] configLoader.loadContentOverrides type:', typeof configLoader.loadContentOverrides);
+
     if (typeof configLoader.loadContentOverrides === 'function') {
+      console.log('[App/loadContentOverrides] ✅ ConfigLoader 函數存在，開始呼叫...');
       return configLoader.loadContentOverrides();
     }
+
+    console.warn('[App/loadContentOverrides] ⚠️ ConfigLoader 函數不存在，使用空配置');
     return Promise.resolve({
       version: 1,
       scenes: {},

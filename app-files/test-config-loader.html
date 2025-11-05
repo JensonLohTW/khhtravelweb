@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConfigLoader 自動化測試</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .controls {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .results {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .test-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #ddd;
+      background: #f9f9f9;
+    }
+
+    .test-item.running {
+      border-left-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .test-item.pass {
+      border-left-color: #22c55e;
+      background: #f0fdf4;
+    }
+
+    .test-item.fail {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .test-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .test-status {
+      font-size: 20px;
+    }
+
+    .test-details {
+      font-size: 13px;
+      color: #666;
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+
+    .test-code {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .summary-card.total {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .summary-card.pass {
+      background: #22c55e;
+      color: white;
+    }
+
+    .summary-card.fail {
+      background: #ef4444;
+      color: white;
+    }
+
+    .summary-card.pending {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .summary-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 ConfigLoader 自動化測試</h1>
+      <p class="subtitle">Content-Overrides 配置系統完整測試套件</p>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" onclick="runAllTests()">
+        <span>▶️</span> 執行所有測試
+      </button>
+      <button class="btn-secondary" onclick="clearResults()">
+        <span>🔄</span> 清除結果
+      </button>
+      <button class="btn-secondary" onclick="location.href='index.html'">
+        <span>🏠</span> 返回主頁
+      </button>
+    </div>
+
+    <div class="results">
+      <div class="summary" id="summary"></div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress" style="width: 0%"></div>
+      </div>
+      <div id="testResults"></div>
+    </div>
+  </div>
+
+  <script src="vendor/marzipano.js"></script>
+  <script src="data.js"></script>
+  <script src="modules/environment.js"></script>
+  <script src="modules/runtimeConfig.js"></script>
+  <script src="modules/configLoader.js"></script>
+
+  <script>
+    const tests = [
+      {
+        name: '檢查環境配置',
+        description: '驗證 RuntimeConfig 是否正確載入',
+        test: async () => {
+          if (!window.MarzipanoApp || !window.MarzipanoApp.RuntimeConfig) {
+            throw new Error('RuntimeConfig 未定義');
+          }
+          const config = window.MarzipanoApp.RuntimeConfig;
+          return {
+            environment: config.environment,
+            allowSceneRename: config.allowSceneRename
+          };
+        }
+      },
+      {
+        name: '檢查 ConfigLoader 存在',
+        description: '驗證 ConfigLoader 模塊是否正確載入',
+        test: async () => {
+          if (!window.MarzipanoApp || !window.MarzipanoApp.ConfigLoader) {
+            throw new Error('ConfigLoader 未定義');
+          }
+          const loader = window.MarzipanoApp.ConfigLoader;
+          const methods = ['loadContentOverrides', 'normalizeOverrides', 'debugReload', 'debugStatus'];
+          const missing = methods.filter(m => typeof loader[m] !== 'function');
+          if (missing.length > 0) {
+            throw new Error('缺少方法: ' + missing.join(', '));
+          }
+          return { methods: methods.length };
+        }
+      },
+      {
+        name: '載入配置文件',
+        description: '測試從服務器載入 content-overrides.json',
+        test: async () => {
+          const config = await window.MarzipanoApp.ConfigLoader.loadContentOverrides();
+          if (!config || typeof config !== 'object') {
+            throw new Error('配置格式錯誤');
+          }
+          return {
+            version: config.version,
+            scenes: Object.keys(config.scenes).length,
+            hotspots: Object.keys(config.hotspots).length
+          };
+        }
+      },
+      {
+        name: '驗證緩存破壞機制',
+        description: '檢查開發模式是否添加時間戳參數',
+        test: async () => {
+          const runtimeConfig = window.MarzipanoApp.RuntimeConfig;
+          const isDev = runtimeConfig.environment === 'development';
+
+          // 捕獲網絡請求
+          const originalXHR = window.XMLHttpRequest;
+          let capturedUrl = null;
+
+          window.XMLHttpRequest = function() {
+            const xhr = new originalXHR();
+            const originalOpen = xhr.open;
+            xhr.open = function(method, url) {
+              if (url.includes('content-overrides.json')) {
+                capturedUrl = url;
+              }
+              return originalOpen.apply(this, arguments);
+            };
+            return xhr;
+          };
+
+          await window.MarzipanoApp.ConfigLoader.loadContentOverrides();
+          window.XMLHttpRequest = originalXHR;
+
+          const hasTimestamp = capturedUrl && capturedUrl.includes('?v=');
+
+          if (isDev && !hasTimestamp) {
+            throw new Error('開發模式應該使用時間戳參數');
+          }
+
+          return {
+            environment: runtimeConfig.environment,
+            url: capturedUrl,
+            hasTimestamp
+          };
+        }
+      },
+      {
+        name: '測試開發工具可用性',
+        description: '驗證開發模式的調試工具',
+        test: async () => {
+          const runtimeConfig = window.MarzipanoApp.RuntimeConfig;
+          const isDev = runtimeConfig.environment === 'development';
+
+          const hasReloadConfig = typeof window.__reloadConfig === 'function';
+          const hasConfigStatus = typeof window.__configStatus === 'function';
+
+          if (isDev && (!hasReloadConfig || !hasConfigStatus)) {
+            throw new Error('開發模式應該暴露調試工具');
+          }
+
+          if (!isDev && (hasReloadConfig || hasConfigStatus)) {
+            throw new Error('生產模式不應該暴露調試工具');
+          }
+
+          return {
+            __reloadConfig: hasReloadConfig,
+            __configStatus: hasConfigStatus,
+            appropriate: true
+          };
+        }
+      },
+      {
+        name: '測試 debugReload 功能',
+        description: '驗證 debugReload() 是否正常工作',
+        test: async () => {
+          const result = await window.MarzipanoApp.ConfigLoader.debugReload();
+          if (!result || typeof result !== 'object') {
+            throw new Error('debugReload 返回格式錯誤');
+          }
+          return result;
+        }
+      },
+      {
+        name: '測試錯誤處理：無效 JSON',
+        description: '模擬 JSON 解析錯誤的處理',
+        test: async () => {
+          // 這個測試需要模擬 XMLHttpRequest
+          const originalXHR = window.XMLHttpRequest;
+
+          window.XMLHttpRequest = function() {
+            return {
+              open: function() {},
+              send: function() {
+                setTimeout(() => {
+                  this.readyState = 4;
+                  this.status = 200;
+                  this.responseText = '{ invalid json }';
+                  this.onreadystatechange();
+                }, 10);
+              }
+            };
+          };
+
+          const config = await window.MarzipanoApp.ConfigLoader.loadContentOverrides();
+          window.XMLHttpRequest = originalXHR;
+
+          // 應該返回空配置而不是拋出錯誤
+          if (Object.keys(config.scenes).length > 0 || Object.keys(config.hotspots).length > 0) {
+            throw new Error('應該返回空配置');
+          }
+
+          return { gracefullyHandled: true };
+        }
+      },
+      {
+        name: '測試錯誤處理：404 錯誤',
+        description: '模擬文件不存在的處理',
+        test: async () => {
+          const originalXHR = window.XMLHttpRequest;
+
+          window.XMLHttpRequest = function() {
+            return {
+              open: function() {},
+              send: function() {
+                setTimeout(() => {
+                  this.readyState = 4;
+                  this.status = 404;
+                  this.responseText = '';
+                  this.onreadystatechange();
+                }, 10);
+              }
+            };
+          };
+
+          const config = await window.MarzipanoApp.ConfigLoader.loadContentOverrides();
+          window.XMLHttpRequest = originalXHR;
+
+          // 應該返回空配置
+          if (config.version !== 1 || Object.keys(config.scenes).length > 0) {
+            throw new Error('應該返回空配置');
+          }
+
+          return { gracefullyHandled: true };
+        }
+      },
+      {
+        name: '測試配置規範化',
+        description: '驗證 normalizeOverrides() 函數',
+        test: async () => {
+          const testConfig = {
+            version: 2,
+            scenes: {
+              'test-id': {
+                name: '測試場景',
+                description: '測試描述'
+              }
+            },
+            hotspots: {
+              'test-id': {
+                infoHotspots: [
+                  { index: 0, title: '測試標題', text: '測試內容' }
+                ]
+              }
+            }
+          };
+
+          const normalized = window.MarzipanoApp.ConfigLoader.normalizeOverrides(testConfig);
+
+          if (normalized.version !== 2) {
+            throw new Error('版本號不正確');
+          }
+
+          if (!normalized.scenes['test-id'] || normalized.scenes['test-id'].name !== '測試場景') {
+            throw new Error('場景數據不正確');
+          }
+
+          return { normalized: true };
+        }
+      },
+      {
+        name: '性能測試：載入時間',
+        description: '測量配置載入所需時間',
+        test: async () => {
+          const start = performance.now();
+          await window.MarzipanoApp.ConfigLoader.loadContentOverrides();
+          const end = performance.now();
+          const duration = end - start;
+
+          if (duration > 1000) {
+            throw new Error(`載入時間過長: ${duration.toFixed(2)}ms`);
+          }
+
+          return {
+            duration: duration.toFixed(2) + 'ms',
+            acceptable: duration < 500
+          };
+        }
+      }
+    ];
+
+    let currentTest = 0;
+    let passedTests = 0;
+    let failedTests = 0;
+
+    function updateSummary() {
+      const summary = document.getElementById('summary');
+      const progress = document.getElementById('progress');
+
+      const total = tests.length;
+      const completed = passedTests + failedTests;
+      const pending = total - completed;
+      const percentage = (completed / total) * 100;
+
+      progress.style.width = percentage + '%';
+
+      summary.innerHTML = `
+        <div class="summary-card total">
+          <div class="summary-number">${total}</div>
+          <div class="summary-label">總測試數</div>
+        </div>
+        <div class="summary-card pass">
+          <div class="summary-number">${passedTests}</div>
+          <div class="summary-label">通過 ✓</div>
+        </div>
+        <div class="summary-card fail">
+          <div class="summary-number">${failedTests}</div>
+          <div class="summary-label">失敗 ✗</div>
+        </div>
+        <div class="summary-card pending">
+          <div class="summary-number">${pending}</div>
+          <div class="summary-label">待測試</div>
+        </div>
+      `;
+    }
+
+    async function runTest(test, index) {
+      const resultsDiv = document.getElementById('testResults');
+
+      const testDiv = document.createElement('div');
+      testDiv.className = 'test-item running';
+      testDiv.id = 'test-' + index;
+      testDiv.innerHTML = `
+        <div class="test-title">
+          <span class="test-status spinner">⏳</span>
+          <span>${test.name}</span>
+        </div>
+        <div class="test-details">${test.description}</div>
+      `;
+      resultsDiv.appendChild(testDiv);
+
+      try {
+        const result = await test.test();
+        testDiv.className = 'test-item pass';
+        testDiv.querySelector('.test-status').textContent = '✅';
+
+        if (result && typeof result === 'object') {
+          const details = testDiv.querySelector('.test-details');
+          details.innerHTML += `<div class="test-code">${JSON.stringify(result, null, 2)}</div>`;
+        }
+
+        passedTests++;
+        return true;
+      } catch (error) {
+        testDiv.className = 'test-item fail';
+        testDiv.querySelector('.test-status').textContent = '❌';
+
+        const details = testDiv.querySelector('.test-details');
+        details.innerHTML += `<div class="test-code" style="background: #7f1d1d; color: #fca5a5;">錯誤: ${error.message}</div>`;
+
+        failedTests++;
+        return false;
+      } finally {
+        updateSummary();
+      }
+    }
+
+    async function runAllTests() {
+      const resultsDiv = document.getElementById('testResults');
+      resultsDiv.innerHTML = '';
+      passedTests = 0;
+      failedTests = 0;
+      currentTest = 0;
+
+      updateSummary();
+
+      console.log('🤖 開始執行自動化測試...\n');
+
+      for (let i = 0; i < tests.length; i++) {
+        currentTest = i;
+        console.log(`\n📝 測試 ${i + 1}/${tests.length}: ${tests[i].name}`);
+        const passed = await runTest(tests[i], i);
+        console.log(passed ? '  ✅ 通過' : '  ❌ 失敗');
+
+        // 稍微延遲以便觀察動畫
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+
+      console.log('\n\n📊 測試完成！');
+      console.log(`  總計: ${tests.length}`);
+      console.log(`  通過: ${passedTests}`);
+      console.log(`  失敗: ${failedTests}`);
+      console.log(`  成功率: ${((passedTests / tests.length) * 100).toFixed(1)}%`);
+
+      if (failedTests === 0) {
+        console.log('\n🎉 所有測試都通過了！系統運行正常。');
+      } else {
+        console.log('\n⚠️ 有測試失敗，請查看詳細信息。');
+      }
+    }
+
+    function clearResults() {
+      document.getElementById('testResults').innerHTML = '';
+      document.getElementById('summary').innerHTML = '';
+      document.getElementById('progress').style.width = '0%';
+      passedTests = 0;
+      failedTests = 0;
+      currentTest = 0;
+    }
+
+    // 頁面載入時更新摘要
+    updateSummary();
+
+    // 顯示歡迎信息
+    console.log('%c🤖 ConfigLoader 自動化測試系統已載入', 'font-size: 20px; font-weight: bold; color: #667eea;');
+    console.log('%c點擊「執行所有測試」按鈕開始測試，或在控制台執行 runAllTests()', 'color: #666;');
+  </script>
+</body>
+</html>

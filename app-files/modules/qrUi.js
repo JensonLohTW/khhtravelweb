@@ -6,10 +6,14 @@
   }
 
   function setup(config) {
+    console.log('[QR UI] 🚀 開始初始化 QR UI 模組...');
     config = config || {};
     var app = window.MarzipanoApp = window.MarzipanoApp || {};
     var qrService = app.QrService;
+
+    console.log('[QR UI] 檢查 QrService:', qrService ? '✅ 已載入' : '❌ 未載入');
     if (!qrService) {
+      console.error('[QR UI] ❌ QrService 未找到，QR 功能無法啟用');
       return;
     }
 
@@ -22,7 +26,14 @@
     var downloadLink = document.querySelector('#qrDownloadLink');
     var sceneManager = config.sceneManager;
 
+    console.log('[QR UI] DOM 元素檢查:');
+    console.log('  - qrToggle 按鈕:', button ? '✅ 找到' : '❌ 未找到');
+    console.log('  - qrPopover 面板:', popover ? '✅ 找到' : '❌ 未找到');
+    console.log('  - qrContainer 容器:', qrContainer ? '✅ 找到' : '❌ 未找到');
+    console.log('  - sceneManager:', sceneManager ? '✅ 已傳入' : '❌ 未傳入');
+
     if (!button || !popover || !qrContainer || !sceneManager) {
+      console.error('[QR UI] ❌ 缺少必要的 DOM 元素或配置，QR 功能無法啟用');
       return;
     }
 
@@ -41,7 +52,9 @@
     };
 
     function openPopover() {
+      console.log('[QR UI] 📂 開始打開 QR 面板...');
       if (state.isOpen) {
+        console.log('[QR UI] ⚠️ 面板已經是開啟狀態，跳過');
         return;
       }
       state.isOpen = true;
@@ -50,14 +63,18 @@
       popover.setAttribute('aria-hidden', 'false');
       button.setAttribute('aria-expanded', 'true');
       var currentScene = sceneManager.getCurrentScene();
+      console.log('[QR UI] 當前場景:', currentScene ? currentScene.data.name : '無');
       updateSceneInfo(currentScene);
       if (typeof popover.focus === 'function') {
         popover.focus();
       }
+      console.log('[QR UI] ✅ QR 面板已打開');
     }
 
     function closePopover() {
+      console.log('[QR UI] 🔒 開始關閉 QR 面板...');
       if (!state.isOpen) {
+        console.log('[QR UI] ⚠️ 面板已經是關閉狀態，跳過');
         return;
       }
       state.isOpen = false;
@@ -65,9 +82,11 @@
       document.body.classList.remove('qr-open');
       popover.setAttribute('aria-hidden', 'true');
       button.setAttribute('aria-expanded', 'false');
+      console.log('[QR UI] ✅ QR 面板已關閉');
     }
 
     function togglePopover() {
+      console.log('[QR UI] 🔄 切換 QR 面板狀態...');
       if (state.isOpen) {
         closePopover();
       } else {
@@ -105,29 +124,48 @@
       }
     }
 
-    button.addEventListener('click', function() {
+    console.log('[QR UI] 🎯 正在綁定按鈕點擊事件...');
+    button.addEventListener('click', function(e) {
+      console.log('[QR UI] 🖱️ QR 按鈕被點擊了！', e);
+      console.log('[QR UI] 當前狀態:', state.isOpen ? '已開啟' : '已關閉');
       togglePopover();
     });
+    console.log('[QR UI] ✅ QR 按鈕點擊事件已綁定');
 
     if (closeButton) {
       closeButton.addEventListener('click', function() {
+        console.log('[QR UI] 關閉按鈕被點擊');
         closePopover();
       });
     }
 
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
+        console.log('[QR UI] ESC 鍵被按下，關閉面板');
         closePopover();
       }
     });
 
     if (typeof sceneManager.addSceneSwitchListener === 'function') {
       sceneManager.addSceneSwitchListener(function(sceneWrapper) {
+        console.log('[QR UI] 場景切換:', sceneWrapper ? sceneWrapper.data.name : '無');
         updateSceneInfo(sceneWrapper);
       });
     }
 
     updateSceneInfo(sceneManager.getCurrentScene());
+    console.log('[QR UI] 🎉 QR UI 模組初始化完成！');
+    console.log('[QR UI] 按鈕位置檢查:', {
+      button: button,
+      offsetTop: button.offsetTop,
+      offsetLeft: button.offsetLeft,
+      offsetWidth: button.offsetWidth,
+      offsetHeight: button.offsetHeight,
+      zIndex: window.getComputedStyle(button).zIndex,
+      display: window.getComputedStyle(button).display,
+      visibility: window.getComputedStyle(button).visibility,
+      pointerEvents: window.getComputedStyle(button).pointerEvents
+    });
   }
 
   window.MarzipanoApp = window.MarzipanoApp || {};

@@ -17,7 +17,7 @@
 
 <div id="sceneList">
   <div class="sceneListActions">
-    <button type="button" id="contentOverridesExport" class="devOnlyButton" aria-label="匯出目前內容覆寫設定">匯出設定</button>
+    <button type="button" id="contentOverridesExport" class="btn btn--sm btn--outline devOnlyButton" aria-label="匯出目前內容覆寫設定">匯出設定</button>
   </div>
   <ul class="scenes">
     
@@ -116,49 +116,90 @@
   <h1 class="sceneName"></h1>
 </div>
 
-<a href="javascript:void(0)" id="autorotateToggle" class="control-button ripple-effect" aria-label="自動旋轉" aria-pressed="false">
-  <img class="icon off" src="img/play.png">
-  <img class="icon on" src="img/pause.png">
+<button type="button" id="mediaGalleryBtn" class="btn btn--icon btn--primary ripple-effect" aria-haspopup="dialog" aria-controls="mediaGalleryModal" aria-label="開啟媒體庫" aria-expanded="false">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+</button>
+
+<button type="button" id="qrToggle" class="btn btn--icon btn--primary ripple-effect" aria-haspopup="dialog" aria-controls="qrPopover" aria-label="顯示目前場景的二維碼" aria-expanded="false">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+</button>
+
+<a href="javascript:void(0)" id="autorotateToggle" class="btn btn--icon btn--primary ripple-effect" aria-label="自動旋轉" aria-pressed="false">
+  <svg class="icon off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+  <svg class="icon on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>
 </a>
 
-<a href="javascript:void(0)" id="fullscreenToggle" class="control-button ripple-effect" aria-label="全螢幕模式" aria-pressed="false">
-  <img class="icon off" src="img/fullscreen.png">
-  <img class="icon on" src="img/windowed.png">
+<a href="javascript:void(0)" id="fullscreenToggle" class="btn btn--icon btn--primary ripple-effect" aria-label="全螢幕模式" aria-pressed="false">
+  <svg class="icon off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+  <svg class="icon on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
 </a>
 
-<button type="button" id="qrToggle" class="control-button control-button--qr ripple-effect" aria-haspopup="dialog" aria-controls="qrPopover" aria-label="顯示目前場景的二維碼" aria-expanded="false">QR</button>
-
-<a href="javascript:void(0)" id="sceneListToggle" class="control-button ripple-effect" aria-label="場景列表" aria-pressed="false" aria-controls="sceneList">
-  <img class="icon off" src="img/expand.png">
-  <img class="icon on" src="img/collapse.png">
+<a href="javascript:void(0)" id="sceneListToggle" class="btn btn--icon btn--primary ripple-effect" aria-label="場景列表" aria-pressed="false" aria-controls="sceneList">
+  <svg class="icon off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+  <svg class="icon on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
 </a>
 
-<a href="javascript:void(0)" id="viewUp" class="control-button viewControlButton viewControlButton-1 ripple-effect" aria-label="向上平移">
-  <img class="icon" src="img/up.png">
+<a href="javascript:void(0)" id="viewUp" class="btn btn--icon btn--primary viewControlButton viewControlButton-1 ripple-effect" aria-label="向上平移">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 </a>
-<a href="javascript:void(0)" id="viewDown" class="control-button viewControlButton viewControlButton-2 ripple-effect" aria-label="向下平移">
-  <img class="icon" src="img/down.png">
+<a href="javascript:void(0)" id="viewDown" class="btn btn--icon btn--primary viewControlButton viewControlButton-2 ripple-effect" aria-label="向下平移">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 </a>
-<a href="javascript:void(0)" id="viewLeft" class="control-button viewControlButton viewControlButton-3 ripple-effect" aria-label="向左平移">
-  <img class="icon" src="img/left.png">
+<a href="javascript:void(0)" id="viewLeft" class="btn btn--icon btn--primary viewControlButton viewControlButton-3 ripple-effect" aria-label="向左平移">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
 </a>
-<a href="javascript:void(0)" id="viewRight" class="control-button viewControlButton viewControlButton-4 ripple-effect" aria-label="向右平移">
-  <img class="icon" src="img/right.png">
+<a href="javascript:void(0)" id="viewRight" class="btn btn--icon btn--primary viewControlButton viewControlButton-4 ripple-effect" aria-label="向右平移">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
 </a>
-<a href="javascript:void(0)" id="viewIn" class="control-button viewControlButton viewControlButton-5 ripple-effect" aria-label="放大">
-  <img class="icon" src="img/plus.png">
+<a href="javascript:void(0)" id="viewIn" class="btn btn--icon btn--primary viewControlButton viewControlButton-5 ripple-effect" aria-label="放大">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
 </a>
-<a href="javascript:void(0)" id="viewOut" class="control-button viewControlButton viewControlButton-6 ripple-effect" aria-label="縮小">
-  <img class="icon" src="img/minus.png">
+<a href="javascript:void(0)" id="viewOut" class="btn btn--icon btn--primary viewControlButton viewControlButton-6 ripple-effect" aria-label="縮小">
+  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
 </a>
 
 <!-- QR Code Popover - 已移除背景遮罩以優化使用者體驗 -->
 <div id="qrPopover" class="qrPopover" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="qrSceneLabel" tabindex="-1">
-  <button type="button" id="qrPopoverClose" class="qrPopover__close" aria-label="關閉二維碼面板">×</button>
+  <button type="button" id="qrPopoverClose" class="btn btn--icon-sm btn--ghost qrPopover__close" aria-label="關閉二維碼面板">×</button>
   <h2 id="qrSceneLabel" class="qrPopover__title"></h2>
   <div id="qrImage" class="qrPopover__image" aria-live="polite"></div>
   <a id="qrSceneLink" class="qrPopover__link" href="#" target="_blank" rel="noopener noreferrer"></a>
-  <a id="qrDownloadLink" class="qrPopover__download" href="#" aria-disabled="true">下載 QR 圖片</a>
+  <a id="qrDownloadLink" class="btn btn--sm btn--outline qrPopover__download" href="#" aria-disabled="true">下載 QR 圖片</a>
+</div>
+
+<!-- 媒體庫彈窗 -->
+<div id="mediaGalleryModal" class="media-gallery-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="mediaGalleryTitle" tabindex="-1">
+  <div class="media-gallery-backdrop"></div>
+  <div class="media-gallery-container">
+    <button type="button" class="btn btn--icon btn--destructive media-gallery-close" aria-label="關閉媒體庫">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <h2 id="mediaGalleryTitle" class="media-gallery-title"></h2>
+    <div class="media-gallery-counter" aria-live="polite">1 / 1</div>
+
+    <div class="media-gallery-content">
+      <div class="media-gallery-item" role="img" aria-label="媒體內容">
+        <!-- 動態插入圖片或影片 -->
+      </div>
+    </div>
+
+    <button type="button" class="btn btn--icon-lg btn--primary media-gallery-nav media-gallery-prev" aria-label="上一個媒體">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="btn btn--icon-lg btn--primary media-gallery-nav media-gallery-next" aria-label="下一個媒體">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+
+    <div class="media-gallery-zoom-controls">
+      <button type="button" class="btn btn--icon-sm btn--primary zoom-in" aria-label="放大">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+      </button>
+      <button type="button" class="btn btn--icon-sm btn--primary zoom-out" aria-label="縮小">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+      </button>
+      <button type="button" class="btn btn--sm btn--primary zoom-reset" aria-label="重置縮放">重置</button>
+    </div>
+  </div>
 </div>
 
 <script src="vendor/screenfull.min.js" ></script>
@@ -175,6 +216,7 @@
 <script src="modules/sceneManager.js"></script>
 <script src="modules/qrService.js"></script>
 <script src="modules/qrUi.js"></script>
+<script src="modules/mediaGallery.js"></script>
 <script src="modules/uiControls.js"></script>
 <script src="modules/sceneNameEditor.js"></script>
 <script src="index.js"></script>

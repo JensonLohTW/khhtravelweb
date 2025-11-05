@@ -45,42 +45,38 @@ a, a:hover, a:active, a:visited {
 #titleBar {
   position: absolute;
   top: 0;
-  left: 0;
-  right: 120px;
+  left: 40px;
+  right: 152px;
   height: 40px;
-  text-align: center;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-2);
 }
 
 .mobile #titleBar {
+  left: 50px;
+  right: 182px;
   height: 50px;
-  right: 150px;
 }
 
-/* If there is a fullscreen button the title bar must make space for it */
+/* If there is a fullscreen button the title bar must make more space */
 body.fullscreen-enabled #titleBar {
-  right: 160px;
-}
-
-body.fullscreen-enabled.mobile #titleBar {
   right: 200px;
 }
 
-/* If there are multiple scenes the title bar must make space for the scene list toggle */
-body.multiple-scenes #titleBar {
-  left: 40px;
-}
-
-body.multiple-scenes.mobile #titleBar {
-  left: 50px;
+body.fullscreen-enabled.mobile #titleBar {
+  right: 240px;
 }
 
 #titleBar .sceneName {
   /* 尺寸與佈局 */
   width: 100%;
   height: 100%;
-  line-height: 30px;
+  margin: 0;
   padding: var(--spacing-2) var(--spacing-4);
+  line-height: 30px;
 
   /* 現代化視覺樣式 */
   background: var(--color-surface-base);
@@ -91,10 +87,11 @@ body.multiple-scenes.mobile #titleBar {
   border-bottom: 1px solid var(--color-border-base);
   box-shadow: var(--shadow-sm);
 
-  /* 文字樣式 */
+  /* 文字樣式 - 居中對齊 */
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
+  text-align: center;
 
   /* 文字溢出處理 */
   overflow: hidden;
@@ -118,41 +115,28 @@ body.multiple-scenes.mobile #titleBar {
 }
 
 /* ============================================
-   統一控制按鈕樣式（使用設計令牌）
+   統一按鈕系統 (Unified Button System)
+   參考 shadcn/ui v4 設計規範
    ============================================ */
 
-/* === 基礎按鈕類別 === */
-.control-button {
+/* === 基礎按鈕類別 (.btn) === */
+.btn {
   /* 佈局 */
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-2);
 
-  /* 尺寸 */
-  width: var(--size-button-base);
-  height: var(--size-button-base);
-  padding: var(--spacing-1);
+  /* 文字 */
+  font-family: inherit;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  text-decoration: none;
 
-  /* 視覺樣式 */
-  background: var(--color-surface-base);
-  backdrop-filter: var(--blur-md);
-  -webkit-backdrop-filter: var(--blur-md);
-
-  border: 1px solid var(--color-border-base);
-  border-radius: var(--radius-base);
-
-  color: var(--color-text-primary);
-
-  /* 防止文字選取 */
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  /* 陰影層次 */
-  box-shadow: var(--shadow-md),
-              0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  /* 邊框與圓角 */
+  border: 1px solid transparent;
+  border-radius: var(--radius-md); /* 統一圓角 8px */
 
   /* 互動 */
   cursor: pointer;
@@ -162,15 +146,87 @@ body.multiple-scenes.mobile #titleBar {
   -ms-user-select: none;
 
   /* 過渡動畫 */
-  transition: all var(--duration-base) var(--easing-standard);
+  transition: all var(--duration-fast) var(--easing-standard);
 
-  /* 防止文字選取和拖曳 */
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  /* 無障礙 */
+  outline: none;
 }
 
-/* Hover 狀態（僅桌面） */
-.no-touch .control-button:hover {
+/* === 焦點狀態（統一） === */
+.btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+/* === 禁用狀態 === */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================
+   尺寸變體 (Size Variants)
+   ============================================ */
+
+/* 小型 */
+.btn--sm {
+  height: 32px;
+  padding: 0 var(--spacing-3);
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-1-5);
+}
+
+/* 標準 */
+.btn--default {
+  height: 40px;
+  padding: 0 var(--spacing-4);
+  font-size: var(--font-size-sm);
+}
+
+/* 大型 */
+.btn--lg {
+  height: 48px;
+  padding: 0 var(--spacing-6);
+  font-size: var(--font-size-base);
+}
+
+/* 圖標按鈕（正方形） */
+.btn--icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+.btn--icon-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.btn--icon-lg {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+}
+
+/* ============================================
+   樣式變體 (Style Variants)
+   ============================================ */
+
+/* 主要按鈕（Default） */
+.btn--primary {
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border-color: var(--color-border-base);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md),
+              0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.no-touch .btn--primary:hover {
   background: var(--color-surface-hover);
   border-color: var(--color-border-hover);
   transform: translateY(-1px);
@@ -178,144 +234,243 @@ body.multiple-scenes.mobile #titleBar {
               0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
-/* Active 狀態 */
-.control-button:active {
+.btn--primary:active {
   transform: translateY(0) scale(0.98);
   box-shadow: var(--shadow-base);
 }
 
-/* Focus 狀態（鍵盤導航） */
-.control-button:focus {
-  outline: none;
-  border-color: var(--color-border-focus);
-  box-shadow: var(--shadow-lg),
-              0 0 0 3px rgba(251, 191, 36, 0.2);
+/* 輪廓按鈕（Outline） */
+.btn--outline {
+  background: transparent;
+  border-color: var(--color-border-base);
+  color: var(--color-text-primary);
 }
 
-/* Focus Visible（現代瀏覽器） */
-.control-button:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-  border-color: var(--color-border-focus);
-  box-shadow: var(--shadow-lg),
-              0 0 0 4px rgba(251, 191, 36, 0.15);
+.no-touch .btn--outline:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
 }
 
-/* 啟用/開啟狀態 */
-.control-button.enabled {
+/* 幽靈按鈕（Ghost） */
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-secondary);
+}
+
+.no-touch .btn--ghost:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* 危險按鈕（Destructive） */
+.btn--destructive {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.no-touch .btn--destructive:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* 強調按鈕（Accent） - 用於 QR、媒體庫等特殊功能 */
+.btn--accent {
+  background: rgba(59, 130, 246, 0.15);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #3b82f6;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-touch .btn--accent:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--accent:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 成功按鈕（Success） */
+.btn--success {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
+
+.no-touch .btn--success:hover {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+/* ============================================
+   特殊狀態
+   ============================================ */
+
+/* 啟用狀態（適用於切換按鈕） */
+.btn.is-active,
+.btn.enabled {
   background: linear-gradient(135deg,
               rgba(251, 191, 36, 0.2),
               rgba(245, 158, 11, 0.15));
   border-color: rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
   box-shadow: var(--shadow-md),
               0 0 0 1px rgba(251, 191, 36, 0.1) inset;
 }
 
-.no-touch .control-button.enabled:hover {
+.no-touch .btn.is-active:hover,
+.no-touch .btn.enabled:hover {
   background: linear-gradient(135deg,
               rgba(251, 191, 36, 0.3),
               rgba(245, 158, 11, 0.25));
   border-color: rgba(251, 191, 36, 0.5);
 }
 
-/* 行動裝置適配 */
-.mobile .control-button {
-  width: var(--size-button-lg);
-  height: var(--size-button-lg);
-  padding: var(--spacing-2);
-}
-
-/* 禁用狀態 */
-.control-button:disabled {
-  opacity: var(--opacity-50);
-  cursor: not-allowed;
+/* 載入狀態 */
+.btn.is-loading {
   pointer-events: none;
+  opacity: 0.7;
 }
 
-/* 圖標容器 */
-.control-button .icon {
-  position: relative;
-  width: var(--size-icon-lg);
-  height: var(--size-icon-lg);
+/* ============================================
+   響應式調整
+   ============================================ */
+
+@media (max-width: 500px) {
+  .btn--default {
+    height: 44px;  /* 增加觸控目標 */
+  }
+
+  .btn--icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .btn--icon .icon {
+    width: 30px;   /* 44px 的 ~70% */
+    height: 30px;
+  }
+
+  .btn--icon-lg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .btn--icon-lg .icon {
+    width: 34px;   /* 48px 的 ~70% */
+    height: 34px;
+  }
+}
+
+/* ============================================
+   圖標樣式（支援 SVG）
+   ============================================ */
+
+.btn .icon {
+  width: var(--size-icon-base);
+  height: var(--size-icon-base);
+  flex-shrink: 0;
+
+  /* SVG 樣式 */
+  display: block;
+  margin: auto;
+
+  /* 繼承父元素顏色 */
+  color: currentColor;
+
   transition: opacity var(--duration-base) var(--easing-standard);
 }
 
-.mobile .control-button .icon {
-  width: var(--size-icon-xl);
-  height: var(--size-icon-xl);
+/* 兼容圖片圖標（如果有遺留的）*/
+.btn .icon[src] {
+  object-fit: contain;
+  object-position: center;
 }
 
-/* 圖標狀態切換 */
-.control-button .icon.on {
+.btn--sm .icon {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.btn--lg .icon {
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+}
+
+/* 圖標按鈕中的圖標應該更大（佔據 70-75% 的按鈕空間）*/
+.btn--icon .icon {
+  width: 28px;   /* 40px 的 70% */
+  height: 28px;
+}
+
+.btn--icon-sm .icon {
+  width: 22px;   /* 32px 的 ~70% */
+  height: 22px;
+}
+
+.btn--icon-lg .icon {
+  width: 34px;   /* 48px 的 ~70% */
+  height: 34px;
+}
+
+/* 圖標狀態切換（用於開關按鈕） */
+.btn .icon.on {
   display: none;
 }
 
-.control-button .icon.off {
+.btn .icon.off {
   display: block;
 }
 
-.control-button.enabled .icon.on {
+.btn.is-active .icon.on,
+.btn.enabled .icon.on {
   display: block;
 }
 
-.control-button.enabled .icon.off {
+.btn.is-active .icon.off,
+.btn.enabled .icon.off {
   display: none;
 }
+
+/* ============================================
+   無障礙與性能優化
+   ============================================ */
 
 /* 減少動畫偏好 */
 @media (prefers-reduced-motion: reduce) {
-  .control-button,
-  .control-button .icon {
+  .btn,
+  .btn .icon {
     transition: none;
   }
 
-  .no-touch .control-button:hover {
+  .no-touch .btn:hover {
     transform: none;
   }
 }
 
 /* 高對比度模式 */
 @media (prefers-contrast: high) {
-  .control-button {
+  .btn {
     border-width: 2px;
   }
 
-  .control-button:focus,
-  .control-button:focus-visible {
+  .btn:focus-visible {
     outline-width: 3px;
   }
 }
 
-/* === QR 按鈕特殊樣式（與 QR 模組保持一致）=== */
-.control-button--qr {
-  /* 特殊背景色（藍色調） */
-  background: rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.25);
-
-  /* 字體樣式 */
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-.no-touch .control-button--qr:hover {
-  background: rgba(59, 130, 246, 0.25);
-  border-color: rgba(59, 130, 246, 0.35);
-}
-
-.control-button--qr:focus,
-.control-button--qr:focus-visible {
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: var(--shadow-lg),
-              0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-.mobile .control-button--qr {
-  font-size: var(--font-size-base);
-}
-
 /* ============================================
-   控制按鈕定位（視覺樣式由 .control-button 提供）
+   控制按鈕定位（視覺樣式由統一按鈕系統 .btn 提供）
    ============================================ */
 
 /* === 全螢幕切換按鈕 === */
@@ -323,42 +478,42 @@ body.multiple-scenes.mobile #titleBar {
   display: none;
   position: absolute;
   top: 0;
-  right: 40px;
+  right: 0;
   z-index: 30;
 }
 
 .mobile #fullscreenToggle {
   width: 50px;
   height: 50px;
-  right: 50px;
+  right: 0;
 }
 
 body.fullscreen-enabled #fullscreenToggle {
   display: block;
 }
 
-/* === 自動旋轉切換按鈕 === */
+/* === 自動旋轉切換按鈕（播放）=== */
 #autorotateToggle {
   display: block;
   position: absolute;
   top: 0;
-  right: 40px;
+  right: 0;
   z-index: 30;
 }
 
 .mobile #autorotateToggle {
   width: 50px;
   height: 50px;
-  right: 50px;
+  right: 0;
 }
 
-/* If there is a fullscreen button, autorotate must placed a bit to the left */
+/* 有全螢幕按鈕時，播放按鈕向左移動（40px按鈕 + 8px間距）*/
 body.fullscreen-enabled #autorotateToggle {
-  right: 80px;
+  right: 48px;
 }
 
 body.fullscreen-enabled.mobile #autorotateToggle {
-  right: 100px;
+  right: 58px;  /* 50px按鈕 + 8px間距 */
 }
 
 /* === 場景列表切換按鈕 === */
@@ -607,6 +762,15 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 100%;
   height: 100%;
   cursor: pointer;
+  display: block;
+
+  /* SVG 樣式 */
+  color: currentColor;
+
+  /* 防止圖片變形（僅針對 img 元素的向後兼容）*/
+  object-fit: contain;
+  object-position: center;
+
   transition: transform var(--duration-fast) var(--easing-standard);
 }
 
@@ -765,6 +929,14 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 90%;
   height: 90%;
   margin: 5%;
+  display: block;
+
+  /* SVG 樣式 */
+  color: currentColor;
+
+  /* 防止圖片變形（僅針對 img 元素的向後兼容）*/
+  object-fit: contain;
+  object-position: center;
 }
 
 .info-hotspot .info-hotspot-title-wrapper {
@@ -873,6 +1045,15 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 70%;
   height: 70%;
   margin: 15%;
+  display: block;
+
+  /* SVG 樣式 */
+  color: currentColor;
+
+  /* 防止圖片變形（僅針對 img 元素的向後兼容）*/
+  object-fit: contain;
+  object-position: center;
+
   transition: transform var(--duration-fast) var(--easing-standard);
 }
 
@@ -1063,6 +1244,14 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 90%;
   height: 90%;
   margin: 5%;
+  display: block;
+
+  /* SVG 樣式 */
+  color: currentColor;
+
+  /* 防止圖片變形（僅針對 img 元素的向後兼容）*/
+  object-fit: contain;
+  object-position: center;
 }
 
 .info-hotspot-modal .info-hotspot-title-wrapper {
@@ -1123,6 +1312,15 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   width: 70%;
   height: 70%;
   margin: 15%;
+  display: block;
+
+  /* SVG 樣式 */
+  color: currentColor;
+
+  /* 防止圖片變形(僅針對 img 元素的向後兼容) */
+  object-fit: contain;
+  object-position: center;
+
   transition: transform var(--duration-fast) var(--easing-standard);
 }
 
@@ -1198,18 +1396,17 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* View control buttons */
+/* ============================================
+   視圖控制按鈕定位（視覺樣式由統一按鈕系統 .btn 提供）
+   ============================================ */
 
 .viewControlButton {
+  /* 僅保留定位樣式 */
   display: none;
   position: absolute;
   bottom: 0;
   left: 50%;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  background-color: rgb(103,115,131);
-  background-color: rgba(103,115,131,0.8);
+  /* 視覺樣式（尺寸、背景、邊框等）由 .btn 提供 */
 }
 
 body.view-control-buttons .viewControlButton {
@@ -1221,14 +1418,6 @@ body.view-control-buttons .viewControlButton {
   body.view-control-buttons .viewControlButton {
     display: none;
   }
-}
-
-.viewControlButton .icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
 }
 
 /* Center is at margin-left: -20px */
@@ -1251,25 +1440,25 @@ body.view-control-buttons .viewControlButton {
   margin-left: 105px;
 }
 
+/* === QR 按鈕 === */
 #qrToggle {
-  /* 定位（由 .control-button 提供基礎樣式）*/
   position: absolute;
   top: 0;
-  right: 80px;
+  right: 48px;  /* 40px播放按鈕 + 8px間距 */
   z-index: 30;
 }
 
 .mobile #qrToggle {
-  right: 100px;
+  right: 58px;  /* 50px播放按鈕 + 8px間距 */
 }
 
-/* If there is a fullscreen button, QR button must be placed a bit to the left */
+/* 有全螢幕按鈕時 */
 body.fullscreen-enabled #qrToggle {
-  right: 120px;
+  right: 96px;  /* (40 + 8) × 2 */
 }
 
 body.fullscreen-enabled.mobile #qrToggle {
-  right: 150px;
+  right: 116px;  /* (50 + 8) × 2 */
 }
 
 /* ============================================
@@ -1277,4 +1466,325 @@ body.fullscreen-enabled.mobile #qrToggle {
    ============================================
    QR 相關樣式已移至 app-files/styles/qr-styles.css
    以實現更好的模組化和代碼解耦
+   ============================================ */
+
+/* ============================================
+   媒體庫樣式 (Media Gallery Styles)
+   ============================================ */
+
+/* === 媒體庫按鈕 === */
+#mediaGalleryBtn {
+  position: absolute;
+  top: 0;
+  right: 96px;  /* (40 + 8) × 2 */
+  z-index: 30;
+}
+
+.mobile #mediaGalleryBtn {
+  width: 50px;
+  height: 50px;
+  right: 116px;  /* (50 + 8) × 2 */
+}
+
+/* 有全螢幕按鈕時 */
+body.fullscreen-enabled #mediaGalleryBtn {
+  right: 144px;  /* (40 + 8) × 3 */
+}
+
+body.fullscreen-enabled.mobile #mediaGalleryBtn {
+  right: 174px;  /* (50 + 8) × 3 */
+}
+
+/* 媒體庫彈窗容器 */
+.media-gallery-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-gallery-modal[aria-hidden="false"] {
+  display: flex;
+}
+
+/* 背景遮罩 */
+.media-gallery-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  animation: fadeIn var(--transition-normal) var(--ease-out);
+}
+
+/* 媒體庫主容器 */
+.media-gallery-container {
+  position: relative;
+  width: 90vw;
+  max-width: 1200px;
+  height: 85vh;
+  max-height: 800px;
+  background: var(--color-surface-elevated);
+  backdrop-filter: var(--blur-lg);
+  -webkit-backdrop-filter: var(--blur-lg);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border-base);
+  box-shadow: var(--shadow-2xl);
+  overflow: hidden;
+  animation: slideUp var(--transition-normal) var(--ease-out);
+  z-index: 1001;
+}
+
+/* 關閉按鈕 - 使用統一按鈕系統 */
+.media-gallery-close {
+  /* 僅保留定位樣式 */
+  position: absolute;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: 10;
+  font-size: 28px;
+  line-height: 1;
+  /* 其他樣式由 .btn .btn--icon .btn--destructive 提供 */
+}
+
+/* 標題 */
+.media-gallery-title {
+  position: absolute;
+  top: var(--spacing-4);
+  left: var(--spacing-4);
+  margin: 0;
+  padding: var(--spacing-2) var(--spacing-4);
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  z-index: 10;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 計數器 */
+.media-gallery-counter {
+  position: absolute;
+  bottom: var(--spacing-4);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-2) var(--spacing-4);
+  background: var(--color-surface-base);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  z-index: 10;
+}
+
+/* 媒體內容區域 */
+.media-gallery-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.media-gallery-item {
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-normal) var(--ease-out);
+}
+
+.media-gallery-item img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.media-gallery-item video {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 導航按鈕 - 使用統一按鈕系統 */
+.media-gallery-nav {
+  /* 僅保留定位樣式 */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-size: 32px;
+  line-height: 1;
+  /* 其他樣式由 .btn .btn--icon-lg .btn--primary 提供 */
+}
+
+/* 特殊的 hover 效果（保持垂直居中） */
+.no-touch .media-gallery-nav:hover {
+  transform: translateY(-50%) translateY(-1px);
+}
+
+.media-gallery-nav:active {
+  transform: translateY(-50%);
+}
+
+.media-gallery-prev {
+  left: var(--spacing-4);
+}
+
+.media-gallery-next {
+  right: var(--spacing-4);
+}
+
+/* 縮放控制 */
+.media-gallery-zoom-controls {
+  position: absolute;
+  bottom: var(--spacing-4);
+  right: var(--spacing-4);
+  display: flex;
+  gap: var(--spacing-2);
+  z-index: 10;
+}
+
+/* 縮放按鈕樣式已由 .btn .btn--icon-sm .btn--sm .btn--primary 提供 */
+/* zoom-reset 特殊樣式（非正方形） */
+.zoom-reset {
+  width: auto !important;
+  font-size: var(--font-size-sm);
+}
+
+/* 動畫 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 響應式設計 - 行動裝置 */
+@media (max-width: 500px) {
+  .media-gallery-container {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .media-gallery-title {
+    font-size: var(--font-size-sm);
+    max-width: 60%;
+  }
+
+  .media-gallery-close {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+
+  .media-gallery-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .media-gallery-prev {
+    left: var(--spacing-2);
+  }
+
+  .media-gallery-next {
+    right: var(--spacing-2);
+  }
+
+  .media-gallery-zoom-controls {
+    bottom: var(--spacing-2);
+    right: var(--spacing-2);
+    gap: var(--spacing-1);
+  }
+
+  .media-gallery-zoom-btn {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-base);
+  }
+
+  .media-gallery-zoom-btn.zoom-reset {
+    padding: 0 var(--spacing-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .media-gallery-counter {
+    bottom: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .media-gallery-item img,
+  .media-gallery-item video {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+/* 觸控裝置優化 */
+@media (hover: none) and (pointer: coarse) {
+  .media-gallery-nav,
+  .media-gallery-close,
+  .media-gallery-zoom-btn {
+    /* 增加觸控目標大小 */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* 高解析度螢幕優化 */
+@media (min-width: 1200px) {
+  .media-gallery-container {
+    max-width: 1400px;
+    max-height: 900px;
+  }
+}
+
+/* ============================================
+   媒體庫樣式結束
    ============================================ */

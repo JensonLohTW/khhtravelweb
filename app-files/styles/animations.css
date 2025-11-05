@@ -167,14 +167,20 @@
    控制按鈕入場動畫
    ============================================ */
 
-.control-button {
+/* 頂部控制按鈕入場動畫 */
+#autorotateToggle,
+#fullscreenToggle,
+#qrToggle,
+#sceneListToggle,
+#mediaGalleryBtn {
   animation: scaleIn 0.4s var(--easing-emphasized) backwards;
 }
 
+#sceneListToggle { animation-delay: 0.05s; }
 #autorotateToggle { animation-delay: 0.1s; }
 #fullscreenToggle { animation-delay: 0.15s; }
 #qrToggle { animation-delay: 0.2s; }
-#sceneListToggle { animation-delay: 0.05s; }
+#mediaGalleryBtn { animation-delay: 0.25s; }
 
 .viewControlButton.viewControlButton-1 { animation-delay: 0.25s; }
 .viewControlButton.viewControlButton-2 { animation-delay: 0.3s; }
@@ -318,19 +324,8 @@ html {
   transform: translateX(4px);
 }
 
-/* 控制按鈕懸停時的彈跳效果 */
-.no-touch .control-button {
-  transition: all 0.25s var(--easing-emphasized);
-}
-
-.no-touch .control-button:hover {
-  transform: translateY(-2px);
-}
-
-.no-touch .control-button:active {
-  transform: translateY(0) scale(0.95);
-  transition-duration: 0.1s;
-}
+/* 統一按鈕系統懸停動畫已在 style.css 中定義 */
+/* 此處不再需要額外的 .control-button 動畫 */
 
 /* ============================================
    特殊效果：光暈效果（移除持續動畫以優化性能）

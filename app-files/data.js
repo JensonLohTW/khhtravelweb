@@ -1,4 +1,5 @@
-var APP_DATA = {
+// 明確掛載到 window 物件，確保全域可訪問
+window.APP_DATA = {
   "scenes": [
     {
       "id": "0-1-7",
@@ -856,5 +857,29 @@ var APP_DATA = {
     "autorotateEnabled": false,
     "fullscreenButton": false,
     "viewControlButtons": false
+  },
+  "mediaGallery": {
+    "enabled": true,
+    "items": [
+      {
+        "type": "image",
+        "src": "media/images/sample1.png",
+        "title": "範例照片 1",
+        "description": "這是一張範例照片"
+      },
+      {
+        "type": "image",
+        "src": "media/images/sample2.png",
+        "title": "範例照片 2",
+        "description": "這是另一張範例照片"
+      },
+      {
+        "type": "video",
+        "src": "media/videos/sample.mp4",
+        "title": "範例影片",
+        "poster": "media/images/sample3.png",
+        "description": "這是一個範例影片"
+      }
+    ]
   }
 };
